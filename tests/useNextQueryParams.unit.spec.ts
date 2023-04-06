@@ -1,5 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { NextQueryParams, NextQueryParamsAdapter, useNextQueryParams } from '../src';
+import { ParsedUrlQuery } from 'querystring';
 
 interface RenderHookProps {
     queryParams: NextQueryParams;
@@ -181,6 +182,110 @@ describe('useNextQueryParams (Unit)', () => {
                 test1: 'test1',
                 test2: 'test2',
                 uncontrolled: 'uncontrolled'
+            });
+        });
+        describe('mode: "reset"', () => {
+            it('should trigger `onReset` when query param is removed', () => {
+                const { rerender } = renderHook(
+                    (query: ParsedUrlQuery) => {
+                        useNextQueryParams(initialQueryParams, {
+                            isRouterReady: true,
+                            query,
+                            onChange: onStateChange,
+                            mode: 'reset'
+                        });
+                    },
+                    {
+                        initialProps: {
+                            test1: 'new test1',
+                            test2: 'new test2'
+                        } as ParsedUrlQuery
+                    }
+                );
+                rerender({
+                    test1: 'new test1'
+                });
+                expect(onChangeTest1).not.toHaveBeenCalledWith('default test1');
+                expect(onChangeTest2).toHaveBeenCalledWith('default test2');
+            });
+            it('should not trigger `onReset` when query param is added', () => {
+                const { rerender } = renderHook(
+                    (query: ParsedUrlQuery) => {
+                        useNextQueryParams(initialQueryParams, {
+                            isRouterReady: true,
+                            query,
+                            onChange: onStateChange,
+                            mode: 'reset'
+                        });
+                    },
+                    {
+                        initialProps: {
+                            test1: 'new test1',
+                            test2: 'new test2'
+                        } as ParsedUrlQuery
+                    }
+                );
+                rerender({
+                    test1: 'new test1',
+                    test2: 'new test2',
+                    test3: 'new test3'
+                });
+                expect(onChangeTest1).not.toHaveBeenCalledWith('default test1');
+                expect(onChangeTest2).not.toHaveBeenCalledWith('default test2');
+            });
+            it('should trigger `onStateChange` when query param is removed', () => {
+                const { rerender } = renderHook(
+                    (query: ParsedUrlQuery) => {
+                        useNextQueryParams(initialQueryParams, {
+                            isRouterReady: true,
+                            query,
+                            onChange: onStateChange,
+                            mode: 'reset'
+                        });
+                    },
+                    {
+                        initialProps: {
+                            test1: 'new test1',
+                            test2: 'new test2'
+                        } as ParsedUrlQuery
+                    }
+                );
+                rerender({
+                    test1: 'new test1'
+                });
+                expect(onStateChange).toHaveBeenCalledWith({
+                    // since we are not updating the state with jest.fn, the default value is used
+                    test1: 'test1',
+                    test2: 'test2'
+                });
+            });
+        });
+        describe('mode: "merge"', () => {
+            it('should trigger `onStateChange` when query param is removed', () => {
+                const { rerender } = renderHook(
+                    (query: ParsedUrlQuery) => {
+                        useNextQueryParams(initialQueryParams, {
+                            isRouterReady: true,
+                            query,
+                            onChange: onStateChange,
+                            mode: 'merge'
+                        });
+                    },
+                    {
+                        initialProps: {
+                            test1: 'new test1',
+                            test2: 'new test2'
+                        } as ParsedUrlQuery
+                    }
+                );
+                rerender({
+                    test1: 'new test1'
+                });
+                expect(onStateChange).toHaveBeenCalledWith({
+                    // since we are not updating the state with jest.fn, the default value is used
+                    test1: 'test1',
+                    test2: 'test2'
+                });
             });
         });
     });

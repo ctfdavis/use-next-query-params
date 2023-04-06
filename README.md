@@ -392,7 +392,7 @@ The adapter interface is defined as follows:
 ```ts
 import { ParsedUrlQuery } from 'querystring';
 
-type NextQueryParamsAdapterMode = 'default' | 'reset' | 'refill';
+type NextQueryParamsAdapterMode = 'default' | 'reset' | 'merge';
 
 type NextQueryParamsAdapter = {
     readonly isRouterReady: boolean;
@@ -435,6 +435,6 @@ The `mode` property of the adapter interface can be set to one of the following 
 
 - `default`: The default mode. The query parameters are updated when the state changes.
 - `reset`: The query parameters are reset to the default values when the state changes.
-- `refill`: The query parameters are refilled with the default values when the state changes.
+- `merge`: The query parameters are merged with the default values when the state changes.
 
 See the [demo](#demo) for an example of each mode.

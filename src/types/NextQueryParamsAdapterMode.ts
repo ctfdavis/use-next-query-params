@@ -6,7 +6,7 @@
  *   any unspecified states' current values.
  * - 'reset' - Updates query params to match the link's target query params, and resets
  *   any unspecified states to their initial values, reflecting these changes in the query params.
- * - 'refill' - Updates query params to match the link's target query params, and then
- *   refills any unspecified states with their current values in the target query params.
+ * - 'merge' - Updates query params to match the link's target query params, and then
+ *   merges any unspecified states with their current values in the target query params.
  */
-export type NextQueryParamsAdapterMode = 'default' | 'reset' | 'refill';
+export type NextQueryParamsAdapterMode = 'default' | 'reset' | 'merge';
