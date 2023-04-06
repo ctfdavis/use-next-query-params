@@ -61,7 +61,8 @@ describe('useNextQueryParams (Integration)', () => {
                     value: {
                         obj: 'obj'
                     },
-                    onChange: onObjChange
+                    onChange: onObjChange,
+                    defaultValue: {}
                 }),
                 strArr: createStrArrQueryParam({
                     value: ['strArr'],

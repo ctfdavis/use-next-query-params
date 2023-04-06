@@ -9,13 +9,15 @@ type CreateStrQueryParamProps = {
 export function createStrQueryParam(props: CreateStrQueryParamProps): NextQueryParam {
     return {
         value: props.value,
-        defaultValue: props.defaultValue !== undefined ? props.defaultValue : '',
         onChange: (v) => {
             if (Array.isArray(v)) {
                 props.onChange(v[0]);
             } else {
                 props.onChange(v);
             }
+        },
+        onReset: () => {
+            props.onChange(props.defaultValue !== undefined ? props.defaultValue : '');
         }
     };
 }

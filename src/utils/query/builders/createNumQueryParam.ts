@@ -9,7 +9,6 @@ type CreateNumQueryParamProps = {
 export function createNumQueryParam(props: CreateNumQueryParamProps): NextQueryParam {
     return {
         value: props.value,
-        defaultValue: props.defaultValue !== undefined ? props.defaultValue : 0,
         onChange: (v) => {
             if (Array.isArray(v)) {
                 if (!isNaN(Number(v[0]))) {
@@ -20,6 +19,9 @@ export function createNumQueryParam(props: CreateNumQueryParamProps): NextQueryP
                     props.onChange(Number(v));
                 }
             }
+        },
+        onReset: () => {
+            props.onChange(props.defaultValue !== undefined ? props.defaultValue : 0);
         }
     };
 }

@@ -1,15 +1,16 @@
 import { NextQueryParam } from '../../../types';
 
-type CreateObjQueryParamProps = {
-    value: object;
-    onChange: (value: object) => void;
-    defaultValue?: object;
+type CreateObjQueryParamProps<T extends object> = {
+    value: T;
+    onChange: (value: T) => void;
+    defaultValue: T;
 };
 
-export function createObjQueryParam(props: CreateObjQueryParamProps): NextQueryParam {
+export function createObjQueryParam<T extends object>(
+    props: CreateObjQueryParamProps<T>
+): NextQueryParam {
     return {
         value: props.value,
-        defaultValue: props.defaultValue !== undefined ? props.defaultValue : {},
         onChange: (v) => {
             let parsed;
             try {
@@ -24,6 +25,9 @@ export function createObjQueryParam(props: CreateObjQueryParamProps): NextQueryP
             if (typeof parsed === 'object' && parsed !== null) {
                 props.onChange(parsed);
             }
+        },
+        onReset: () => {
+            props.onChange(props.defaultValue);
         }
     };
 }

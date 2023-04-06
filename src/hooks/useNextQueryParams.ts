@@ -1,10 +1,10 @@
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { parseQueryParams } from '../utils/query/parseQueryParams';
 import { areQueryParamsEqual } from '../utils/query/areQueryParamsEqual';
 import { ParsedUrlQuery } from 'querystring';
 import { NextQueryParams, NextQueryParamsAdapter } from '../types';
 import { NextQueryParamsContext } from '../contexts/NextQueryParamsContext';
-import { useDeepCompareEffect } from './useDeepCompareEffect';
+import isEqual from 'react-fast-compare';
 
 export function useNextQueryParams(
     params: NextQueryParams,
@@ -12,6 +12,7 @@ export function useNextQueryParams(
 ) {
     const [init, setInit] = useState(true);
     const [prevQuery, setPrevQuery] = useState<ParsedUrlQuery>({});
+    const [prevState, setPrevState] = useState<Record<string, any>>({});
     const [shouldUpdateQuery, setShouldUpdateQuery] = useState(false);
     const keys = Object.keys(params);
     const nextQueryParamsContextValues = useContext(NextQueryParamsContext);
@@ -42,6 +43,10 @@ export function useNextQueryParams(
         return state;
     }, [params]);
 
+    const hasQueryChanged = useMemo(() => {
+        return !areQueryParamsEqual(query, prevQuery);
+    }, [query, prevQuery]);
+
     const onInit = () => {
         for (const key of keys) {
             const value = query[key];
@@ -52,26 +57,29 @@ export function useNextQueryParams(
     };
 
     const onChange = () => {
-        if (areQueryParamsEqual(prevQuery, query) || shouldUpdateQuery) {
-            setShouldUpdateQuery(false);
-            onStateChange({ ...query, ...parseQueryParams(state) });
-        } else {
+        if (hasQueryChanged) {
             for (const key of keys) {
                 const value = query[key];
-                if (value) {
-                    params[key].onChange(value);
-                } else {
+                if (value === undefined) {
                     setShouldUpdateQuery(mode !== 'default');
                     if (mode === 'reset') {
-                        params[key].onChange(params[key].defaultValue);
+                        params[key].onReset();
                     }
+                } else {
+                    params[key].onChange(value);
                 }
             }
             setPrevQuery(query);
+        } else if (shouldUpdateQuery) {
+            onStateChange({ ...query, ...parseQueryParams(state) });
+            setShouldUpdateQuery(false);
+        } else if (!isEqual(prevState, state)) {
+            setShouldUpdateQuery(true);
+            setPrevState(state);
         }
     };
 
-    useDeepCompareEffect(() => {
+    useEffect(() => {
         if (isRouterReady) {
             if (init) {
                 onInit();
@@ -79,5 +87,5 @@ export function useNextQueryParams(
                 onChange();
             }
         }
-    }, [init, isRouterReady, query, state, shouldUpdateQuery]);
+    }, [init, isRouterReady, state, hasQueryChanged, shouldUpdateQuery]);
 }

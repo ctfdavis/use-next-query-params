@@ -19,12 +19,12 @@ describe('useNextQueryParams (Unit)', () => {
             test1: {
                 value: 'test1',
                 onChange: onChangeTest1,
-                defaultValue: 'default test1'
+                onReset: () => onChangeTest1('default test1')
             },
             test2: {
                 value: 'test2',
                 onChange: onChangeTest2,
-                defaultValue: 'default test2'
+                onReset: () => onChangeTest2('default test2')
             }
         };
     });
@@ -148,12 +148,12 @@ describe('useNextQueryParams (Unit)', () => {
                     test1: {
                         value: 'new test1',
                         onChange: onChangeTest1,
-                        defaultValue: 'default test1'
+                        onReset: () => onChangeTest1('default test1')
                     },
                     test2: {
                         value: 'new test2',
                         onChange: onChangeTest2,
-                        defaultValue: 'default test2'
+                        onReset: () => onChangeTest2('default test2')
                     }
                 },
                 options: {

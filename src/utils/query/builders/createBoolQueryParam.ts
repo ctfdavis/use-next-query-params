@@ -9,7 +9,6 @@ type CreateBoolQueryParamProps = {
 export function createBoolQueryParam(props: CreateBoolQueryParamProps): NextQueryParam {
     return {
         value: props.value,
-        defaultValue: props.defaultValue !== undefined ? props.defaultValue : false,
         onChange: (v) => {
             if (Array.isArray(v)) {
                 if (v[0] === 'true') {
@@ -24,6 +23,9 @@ export function createBoolQueryParam(props: CreateBoolQueryParamProps): NextQuer
                     props.onChange(false);
                 }
             }
+        },
+        onReset: () => {
+            props.onChange(props.defaultValue !== undefined ? props.defaultValue : false);
         }
     };
 }

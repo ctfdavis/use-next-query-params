@@ -1,7 +1,7 @@
 export type NextQueryParam = {
     readonly value: any;
     readonly onChange: (value: string | string[]) => void;
-    readonly defaultValue: any;
+    readonly onReset: () => void;
 };
 
 export type NextQueryParams = {
