@@ -5,5 +5,6 @@ import { createRollupConfig } from './createRollupConfig';
 export default createRollupConfig({
     name: 'index',
     format: 'esm',
-    input: pkg.source
+    input: pkg.source,
+    tsconfig: 'tsconfig.build.json'
 });
