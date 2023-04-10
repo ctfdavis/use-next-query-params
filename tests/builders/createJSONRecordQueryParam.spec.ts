@@ -1,16 +1,17 @@
-import { createObjQueryParam } from '../../src';
+import { createJSONRecordQueryParam } from '../../src';
 
-describe('createObjQueryParam', () => {
+describe('createJSONRecordQueryParam', () => {
     it('returns an object with the correct value and onChange function', () => {
         const props = {
             value: { foo: 'bar' },
             onChange: jest.fn(),
             defaultValue: { baz: 'qux' }
         };
-        const result = createObjQueryParam(props);
+        const result = createJSONRecordQueryParam(props);
 
         expect(result).toEqual({
             value: { foo: 'bar' },
+            serialize: expect.any(Function),
             onChange: expect.any(Function),
             onReset: expect.any(Function)
         });

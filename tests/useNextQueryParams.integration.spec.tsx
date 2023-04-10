@@ -6,12 +6,12 @@ import {
     createStrQueryParam,
     createNumQueryParam,
     createBoolQueryParam,
-    createObjQueryParam,
+    createJSONRecordQueryParam,
     NextQueryParamsAdapter,
-    NextQueryParamsProvider
+    NextQueryParamsProvider,
+    createStrArrQueryParam,
+    createNumArrQueryParam
 } from '../src';
-import { createStrArrQueryParam } from '../src/utils/query/builders/createStrArrQueryParam';
-import { createNumArrQueryParam } from '../src/utils/query/builders/createNumArrQueryParam';
 
 type RenderHookProps = {
     queryParams: NextQueryParams;
@@ -57,9 +57,11 @@ describe('useNextQueryParams (Integration)', () => {
                     value: true,
                     onChange: onBoolChange
                 }),
-                obj: createObjQueryParam({
+                obj: createJSONRecordQueryParam({
                     value: {
-                        obj: 'obj'
+                        obj: {
+                            obj: 'obj'
+                        }
                     },
                     onChange: onObjChange,
                     defaultValue: {}
@@ -101,16 +103,16 @@ describe('useNextQueryParams (Integration)', () => {
             });
         });
         describe('initial render', () => {
-            it('should update state with query params', () => {
+            it('should update state with urlQuery params', () => {
                 renderHook(
                     ({ queryParams, adapter }: RenderHookProps) =>
                         useNextQueryParams(queryParams, {
                             ...adapter,
-                            query: {
+                            urlQuery: {
                                 str: 'new str',
                                 num: '0',
                                 bool: 'false',
-                                obj: '{"obj":"new obj"}',
+                                obj: '{"obj":{"obj":"newObj"}}',
                                 strArr: ['new strArr'],
                                 numArr: ['0'],
                                 uncontrolled: 'uncontrolled'
@@ -120,16 +122,23 @@ describe('useNextQueryParams (Integration)', () => {
                         initialProps: initialRenderHookProps
                     }
                 );
-                expectOnChangeCalls('new str', 0, false, { obj: 'new obj' }, ['new strArr'], [0]);
+                expectOnChangeCalls(
+                    'new str',
+                    0,
+                    false,
+                    { obj: { obj: 'newObj' } },
+                    ['new strArr'],
+                    [0]
+                );
             });
         });
         describe('subsequent renders', () => {
-            it('should update query params when state changes', () => {
+            it('should update urlQuery params when state changes', () => {
                 renderHook(
                     ({ queryParams, adapter }: RenderHookProps) =>
                         useNextQueryParams(queryParams, {
                             ...adapter,
-                            query: {
+                            urlQuery: {
                                 uncontrolled: 'uncontrolled'
                             }
                         }),
@@ -141,7 +150,7 @@ describe('useNextQueryParams (Integration)', () => {
                     str: 'str',
                     num: '0',
                     bool: 'true',
-                    obj: '{"obj":"obj"}',
+                    obj: '{"obj":{"obj":"obj"}}',
                     strArr: ['strArr'],
                     numArr: ['0'],
                     uncontrolled: 'uncontrolled'
@@ -151,13 +160,13 @@ describe('useNextQueryParams (Integration)', () => {
     });
     describe('with a provider', () => {
         describe('initial render', () => {
-            it('should update state with query params', () => {
+            it('should update state with urlQuery params', () => {
                 const wrapper = ({ children }: { children: React.ReactNode }) => (
                     <NextQueryParamsProvider
                         adapter={{
                             isRouterReady: true,
                             onChange: onStateChange,
-                            query: {
+                            urlQuery: {
                                 str: 'new str',
                                 num: '0',
                                 bool: 'false',
@@ -177,13 +186,13 @@ describe('useNextQueryParams (Integration)', () => {
                 });
                 expectOnChangeCalls('new str', 0, false, { obj: 'new obj' }, ['new strArr'], [0]);
             });
-            it('should update query params when state changes', () => {
+            it('should update urlQuery params when state changes', () => {
                 const wrapper = ({ children }: { children: React.ReactNode }) => (
                     <NextQueryParamsProvider
                         adapter={{
                             isRouterReady: true,
                             onChange: onStateChange,
-                            query: {
+                            urlQuery: {
                                 uncontrolled: 'uncontrolled'
                             }
                         }}
@@ -199,7 +208,7 @@ describe('useNextQueryParams (Integration)', () => {
                     str: 'str',
                     num: '0',
                     bool: 'true',
-                    obj: '{"obj":"obj"}',
+                    obj: '{"obj":{"obj":"obj"}}',
                     strArr: ['strArr'],
                     numArr: ['0'],
                     uncontrolled: 'uncontrolled'
@@ -207,13 +216,13 @@ describe('useNextQueryParams (Integration)', () => {
             });
         });
         describe('subsequent renders', () => {
-            it('should update state with query params', () => {
+            it('should update state with urlQuery params', () => {
                 const wrapper = ({ children }: { children: React.ReactNode }) => (
                     <NextQueryParamsProvider
                         adapter={{
                             isRouterReady: true,
                             onChange: onStateChange,
-                            query: {
+                            urlQuery: {
                                 uncontrolled: 'uncontrolled'
                             }
                         }}
@@ -225,7 +234,7 @@ describe('useNextQueryParams (Integration)', () => {
                     ({ queryParams, adapter }: RenderHookProps) =>
                         useNextQueryParams(queryParams, {
                             ...adapter,
-                            query: {
+                            urlQuery: {
                                 str: 'new str',
                                 num: '0',
                                 bool: 'false',
@@ -244,13 +253,13 @@ describe('useNextQueryParams (Integration)', () => {
             });
         });
         describe('overriding context', () => {
-            it('should update state with query params', () => {
+            it('should update state with urlQuery params', () => {
                 const wrapper = ({ children }: { children: React.ReactNode }) => (
                     <NextQueryParamsProvider
                         adapter={{
                             isRouterReady: true,
                             onChange: onStateChange,
-                            query: {
+                            urlQuery: {
                                 uncontrolled: 'uncontrolled'
                             }
                         }}
@@ -262,7 +271,7 @@ describe('useNextQueryParams (Integration)', () => {
                     ({ queryParams, adapter }: RenderHookProps) =>
                         useNextQueryParams(queryParams, {
                             ...adapter,
-                            query: {
+                            urlQuery: {
                                 str: 'new str',
                                 num: '456',
                                 bool: 'false',

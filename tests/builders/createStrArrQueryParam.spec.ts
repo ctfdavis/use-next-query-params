@@ -28,14 +28,53 @@ describe('createStrArrQueryParam', () => {
         expect(props.onChange).toHaveBeenCalledWith(['foo', 'bar']);
     });
 
-    it('sets default value to an empty array if defaultValue is not provided', () => {
-        const props = {
-            value: ['hello', 'world'],
-            onChange: jest.fn()
-        };
-        const result = createStrArrQueryParam(props);
+    describe('defaultValue', () => {
+        it('should be an empty array if defaultValue is not provided', () => {
+            const props = {
+                value: ['hello', 'world'],
+                onChange: jest.fn()
+            };
+            const result = createStrArrQueryParam(props);
 
-        result.onReset();
-        expect(props.onChange).toHaveBeenCalledWith([]);
+            result.onReset();
+            expect(props.onChange).toHaveBeenCalledWith([]);
+        });
+
+        it('should be null if nullable is true and defaultValue is not provided', () => {
+            const props = {
+                value: ['hello', 'world'],
+                onChange: jest.fn(),
+                nullable: true
+            };
+            const result = createStrArrQueryParam(props);
+
+            result.onReset();
+            expect(props.onChange).toHaveBeenCalledWith(null);
+        });
+
+        it('should be null if both nullable and optional are true and defaultValue is not provided', () => {
+            const props = {
+                value: ['hello', 'world'],
+                onChange: jest.fn(),
+                nullable: true,
+                optional: true
+            };
+            const result = createStrArrQueryParam(props);
+
+            result.onReset();
+            expect(props.onChange).toHaveBeenCalledWith(null);
+        });
+
+        it('should be undefined if optional is true and defaultValue is not provided', () => {
+            const props = {
+                value: ['hello', 'world'],
+                onChange: jest.fn(),
+                optional: true
+            };
+            const result = createStrArrQueryParam(props);
+
+            result.onReset();
+            expect(props.onChange).toHaveBeenCalledWith(undefined);
+        });
     });
 });

@@ -1,19 +1,21 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
-import { parseQueryParams } from '../utils/query/parseQueryParams';
-import { areQueryParamsEqual } from '../utils/query/areQueryParamsEqual';
+import { removeKeysFromObject } from '../utils/removeKeysFromObject';
+import { serializeQueryParamStates } from '../utils/query/serializeQueryParamStates';
+import { areUrlQueriesEqual } from '../utils/query/areUrlQueriesEqual';
 import { ParsedUrlQuery } from 'querystring';
 import { NextQueryParams, NextQueryParamsAdapter } from '../types';
 import { NextQueryParamsContext } from '../contexts/NextQueryParamsContext';
-import isEqual from 'react-fast-compare';
+import { QueryParamState } from '../types/QueryParamState';
+import { QueryParamStates } from '../types/QueryParamStates';
+import { NextQueryParamsAdapterMode } from '../types/NextQueryParamsAdapterMode';
+import { getChangedUrlQueryKeys } from '../utils/query/getChangedUrlQueryKeys';
 
-export function useNextQueryParams(
-    params: NextQueryParams,
+export function useNextQueryParams<T extends Record<string, unknown> = Record<string, any>>(
+    params: NextQueryParams<T>,
     adapter?: Partial<NextQueryParamsAdapter>
 ) {
     const [init, setInit] = useState(true);
-    const [prevQuery, setPrevQuery] = useState<ParsedUrlQuery>({});
-    const [prevState, setPrevState] = useState<Record<string, any>>({});
-    const [shouldUpdateQuery, setShouldUpdateQuery] = useState(false);
+    const [prevUrlQuery, setPrevUrlQuery] = useState<ParsedUrlQuery>({});
     const keys = Object.keys(params);
     const nextQueryParamsContextValues = useContext(NextQueryParamsContext);
     const contextAdapter = nextQueryParamsContextValues?.adapter;
@@ -23,45 +25,60 @@ export function useNextQueryParams(
             : contextAdapter?.isRouterReady !== undefined
             ? contextAdapter.isRouterReady
             : true;
-    const query = adapter?.query || contextAdapter?.query;
+    const urlQuery = adapter?.urlQuery || contextAdapter?.urlQuery;
     const onStateChange = adapter?.onChange || contextAdapter?.onChange;
-    const mode = adapter?.mode || contextAdapter?.mode || 'default';
+    const mode: NextQueryParamsAdapterMode = adapter?.mode || contextAdapter?.mode || 'reset';
+    const customSerializeQueryParam =
+        adapter?.customSerializeQueryParam || contextAdapter?.customSerializeQueryParam;
 
-    if (!onStateChange || !query) {
+    if (!onStateChange || !urlQuery) {
         throw new Error(
-            'useNextQueryParams is used outside a NextQueryParamsProvider, but no `onChange` function or `query` was passed to the hook.'
+            'useNextQueryParams is used outside a NextQueryParamsProvider, but no `onChange` function or `urlQuery` was passed to the hook.'
         );
     }
 
-    const state = useMemo(() => {
-        const state: Record<string, any> = {};
+    const uncontrolledKeys = Object.keys(urlQuery).filter((key) => !keys.includes(key));
+
+    const queryParamStates = useMemo(() => {
+        const queryParamStates: QueryParamStates = {};
         for (const [key, value] of Object.entries(params)) {
-            if (value.value !== undefined) {
-                state[key] = value.value;
+            queryParamStates[key] = {} as QueryParamState;
+            if (value.value !== undefined && value.value !== null) {
+                queryParamStates[key].value = value.value;
             }
+            queryParamStates[key].serialize = value.serialize;
         }
-        return state;
+        return queryParamStates;
     }, [params]);
 
-    const hasQueryChanged = useMemo(() => {
-        return !areQueryParamsEqual(query, prevQuery);
-    }, [query, prevQuery]);
+    const hasUrlQueryChanged = useMemo(() => {
+        return !areUrlQueriesEqual(urlQuery, prevUrlQuery);
+    }, [urlQuery, prevUrlQuery]);
+
+    const haveQueryParamStatesChanged = useMemo(() => {
+        return !areUrlQueriesEqual(
+            removeKeysFromObject(urlQuery, uncontrolledKeys),
+            serializeQueryParamStates(queryParamStates, customSerializeQueryParam)
+        );
+    }, [queryParamStates, urlQuery]);
 
     const onInit = () => {
         for (const key of keys) {
-            const value = query[key];
+            const value = urlQuery[key];
             value && params[key].onChange(value);
         }
-        setPrevQuery(query);
+        setPrevUrlQuery(urlQuery);
         setInit(false);
     };
 
     const onChange = () => {
-        if (hasQueryChanged) {
-            for (const key of keys) {
-                const value = query[key];
+        if (hasUrlQueryChanged) {
+            const controlledChangedKeys = getChangedUrlQueryKeys(urlQuery, prevUrlQuery).filter(
+                (key) => keys.includes(key)
+            );
+            for (const key of controlledChangedKeys) {
+                const value = urlQuery[key];
                 if (value === undefined) {
-                    setShouldUpdateQuery(mode !== 'default');
                     if (mode === 'reset') {
                         params[key].onReset();
                     }
@@ -69,13 +86,12 @@ export function useNextQueryParams(
                     params[key].onChange(value);
                 }
             }
-            setPrevQuery(query);
-        } else if (shouldUpdateQuery) {
-            onStateChange({ ...query, ...parseQueryParams(state) });
-            setShouldUpdateQuery(false);
-        } else if (!isEqual(prevState, state)) {
-            setShouldUpdateQuery(true);
-            setPrevState(state);
+            setPrevUrlQuery(urlQuery);
+        } else if (haveQueryParamStatesChanged) {
+            onStateChange({
+                ...removeKeysFromObject(urlQuery, keys),
+                ...serializeQueryParamStates(queryParamStates, customSerializeQueryParam)
+            });
         }
     };
 
@@ -87,5 +103,5 @@ export function useNextQueryParams(
                 onChange();
             }
         }
-    }, [init, isRouterReady, state, hasQueryChanged, shouldUpdateQuery]);
+    }, [init, isRouterReady, hasUrlQueryChanged, haveQueryParamStatesChanged]);
 }

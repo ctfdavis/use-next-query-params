@@ -1,23 +1,30 @@
-import { NextQueryParam } from '../../../types';
+import { createQueryParamFunctionFactory } from './createQueryParamFunctionFactory';
 
-type CreateStrArrQueryParam = {
-    value: string[];
-    onChange: (value: string[]) => void;
-    defaultValue?: string[];
-};
-
-export function createStrArrQueryParam(props: CreateStrArrQueryParam): NextQueryParam {
-    return {
-        value: props.value,
-        onChange: (v) => {
-            if (Array.isArray(v)) {
-                props.onChange(v);
-            } else {
-                props.onChange([v]);
-            }
-        },
-        onReset: () => {
-            props.onChange(props.defaultValue !== undefined ? props.defaultValue : []);
+export const createStrArrQueryParam = createQueryParamFunctionFactory<string[]>((props) => ({
+    value: props.value,
+    serialize: props.serialize,
+    onChange: (v) => {
+        if (Array.isArray(v)) {
+            props.onChange(v);
+        } else {
+            props.onChange([v]);
         }
-    };
-}
+    },
+    onReset: () => {
+        const defaultValue =
+            props.defaultValue !== undefined
+                ? props.defaultValue
+                : props.nullable
+                ? null
+                : props.optional
+                ? undefined
+                : [];
+        /**
+         * @note The usage of `any` in the following is necessary because TypeScript is unable to
+         * infer the generic types N and O in `createQueryParamFunction` without exposing them, making it
+         * impossible to maintain complete type safety for the `props.onChange` argument here.
+         * To ensure correctness, be cautious and thoroughly test this code.
+         */
+        props.onChange(defaultValue as any);
+    }
+}));

@@ -7,7 +7,7 @@ describe('createNextRouterAdapter', () => {
         const adapter = createNextRouterAdapter(mockRouter);
 
         expect(adapter.isRouterReady).toBe(true);
-        expect(adapter.query).toEqual({});
+        expect(adapter.urlQuery).toEqual({});
         expect(adapter.mode).toBeUndefined();
         expect(adapter.onChange).toBeInstanceOf(Function);
     });

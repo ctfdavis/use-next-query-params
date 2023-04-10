@@ -36,14 +36,53 @@ describe('createNumQueryParam', () => {
         expect(props.onChange).toHaveBeenCalledWith(456);
     });
 
-    it('sets default value to 0 if defaultValue is not provided', () => {
-        const props = {
-            value: 123,
-            onChange: jest.fn()
-        };
-        const result = createNumQueryParam(props);
+    describe('defaultValue', () => {
+        it('should be 0 if defaultValue is not provided', () => {
+            const props = {
+                value: 123,
+                onChange: jest.fn()
+            };
+            const result = createNumQueryParam(props);
 
-        result.onReset();
-        expect(props.onChange).toHaveBeenCalledWith(0);
+            result.onReset();
+            expect(props.onChange).toHaveBeenCalledWith(0);
+        });
+
+        it('should be null if nullable is true and defaultValue is not provided', () => {
+            const props = {
+                value: 123,
+                onChange: jest.fn(),
+                nullable: true
+            };
+            const result = createNumQueryParam(props);
+
+            result.onReset();
+            expect(props.onChange).toHaveBeenCalledWith(null);
+        });
+
+        it('should be undefined if optional is true and defaultValue is not provided', () => {
+            const props = {
+                value: 123,
+                onChange: jest.fn(),
+                optional: true
+            };
+            const result = createNumQueryParam(props);
+
+            result.onReset();
+            expect(props.onChange).toHaveBeenCalledWith(undefined);
+        });
+
+        it('should be null if nullable and optional are true and defaultValue is not provided', () => {
+            const props = {
+                value: 123,
+                onChange: jest.fn(),
+                nullable: true,
+                optional: true
+            };
+            const result = createNumQueryParam(props);
+
+            result.onReset();
+            expect(props.onChange).toHaveBeenCalledWith(null);
+        });
     });
 });

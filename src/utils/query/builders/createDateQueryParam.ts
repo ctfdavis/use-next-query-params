@@ -1,6 +1,11 @@
 import { createQueryParamFunctionFactory } from './createQueryParamFunctionFactory';
 
-export const createBoolQueryParam = createQueryParamFunctionFactory<boolean>((props) => ({
+export const createDateQueryParam = createQueryParamFunctionFactory<
+    Date,
+    {
+        withTime?: boolean;
+    }
+>((props) => ({
     value: props.value,
     serialize:
         props.serialize ||
@@ -8,36 +13,32 @@ export const createBoolQueryParam = createQueryParamFunctionFactory<boolean>((pr
             if (v === undefined || v === null) {
                 return v;
             }
-            return v.toString();
+            if (props.withTime) {
+                return v.toISOString().split('.')[0];
+            }
+            return v.toISOString().split('T')[0];
         }),
     onChange: (v) => {
-        if (props.deserialize) {
-            props.onChange(props.deserialize(v));
-            return;
-        }
         if (Array.isArray(v)) {
-            if (v[0] === 'true') {
-                props.onChange(true);
-            } else if (v[0] === 'false') {
-                props.onChange(false);
+            const parsedDate = new Date(v[0]);
+            if (!isNaN(parsedDate.getTime())) {
+                props.onChange(parsedDate);
             }
         } else {
-            if (v === 'true') {
-                props.onChange(true);
-            } else if (v === 'false') {
-                props.onChange(false);
+            const parsedDate = new Date(v);
+            if (!isNaN(parsedDate.getTime())) {
+                props.onChange(parsedDate);
             }
         }
     },
     onReset: () => {
-        const defaultValue =
-            props.defaultValue !== undefined
-                ? props.defaultValue
-                : props.nullable
-                ? null
-                : props.optional
-                ? undefined
-                : false;
+        const defaultValue = props.defaultValue
+            ? new Date(props.defaultValue)
+            : props.nullable
+            ? null
+            : props.optional
+            ? undefined
+            : new Date();
         /**
          * @note The usage of `any` in the following is necessary because TypeScript is unable to
          * infer the generic types N and O in `createQueryParamFunction` without exposing them, making it

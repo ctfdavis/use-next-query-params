@@ -12,6 +12,7 @@
     "no-unused-vars": "warn",
     "curly": "error",
     "no-extra-boolean-cast": "error",
-    "react/react-in-jsx-scope": "off"
+    "react/react-in-jsx-scope": "off",
+    "@typescript-eslint/no-empty-function": "warn"
   }
 }

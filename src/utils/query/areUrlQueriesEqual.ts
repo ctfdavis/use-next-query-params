@@ -1,7 +1,7 @@
 import { ParsedUrlQuery } from 'querystring';
-import { areQueryParamValuesEqual } from './areQueryParamValuesEqual';
+import { areUrlQueryValuesEqual } from './areUrlQueryValuesEqual';
 
-export function areQueryParamsEqual(a: ParsedUrlQuery, b: ParsedUrlQuery): boolean {
+export function areUrlQueriesEqual(a: ParsedUrlQuery, b: ParsedUrlQuery): boolean {
     const aKeys = Object.keys(a);
     const bKeys = Object.keys(b);
     if (aKeys.length !== bKeys.length || !aKeys.every((key) => bKeys.includes(key))) {
@@ -10,6 +10,6 @@ export function areQueryParamsEqual(a: ParsedUrlQuery, b: ParsedUrlQuery): boole
     return aKeys.every((key) => {
         const aValue = a[key] as string | string[];
         const bValue = b[key] as string | string[];
-        return areQueryParamValuesEqual(aValue, bValue);
+        return areUrlQueryValuesEqual(aValue, bValue);
     });
 }

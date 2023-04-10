@@ -28,7 +28,7 @@ export function createNextRouterAdapter(
 
     return {
         isRouterReady: nextRouter.isReady,
-        query: nextRouter.query,
+        urlQuery: nextRouter.query,
         mode,
         onChange: onChange || defaultOnChange
     };

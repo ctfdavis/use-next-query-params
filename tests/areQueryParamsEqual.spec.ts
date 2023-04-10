@@ -1,4 +1,4 @@
-import { areQueryParamsEqual } from '../src/utils/query/areQueryParamsEqual';
+import { areUrlQueriesEqual } from '../src/utils/query/areUrlQueriesEqual';
 
 describe('areQueryParamsEqual', () => {
     const testCases = [
@@ -71,6 +71,6 @@ describe('areQueryParamsEqual', () => {
     ];
 
     test.each(testCases)('should return %p when comparing %p and %p', ({ a, b, expected }) => {
-        expect(areQueryParamsEqual(a, b)).toBe(expected);
+        expect(areUrlQueriesEqual(a, b)).toBe(expected);
     });
 });

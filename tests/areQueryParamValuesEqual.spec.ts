@@ -1,4 +1,4 @@
-import { areQueryParamValuesEqual } from '../src/utils/query/areQueryParamValuesEqual';
+import { areUrlQueryValuesEqual } from '../src/utils/query/areUrlQueryValuesEqual';
 
 describe('areQueryParamValuesEqual', () => {
     const testCases = [
@@ -14,6 +14,6 @@ describe('areQueryParamValuesEqual', () => {
         { a: 'a', b: ['a'], expected: false }
     ];
     test.each(testCases)('should return %p when comparing %p and %p', ({ a, b, expected }) => {
-        expect(areQueryParamValuesEqual(a, b)).toBe(expected);
+        expect(areUrlQueryValuesEqual(a, b)).toBe(expected);
     });
 });

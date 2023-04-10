@@ -12,7 +12,8 @@ describe('createStrQueryParam', () => {
         expect(result).toEqual({
             value: 'hello',
             onChange: expect.any(Function),
-            onReset: expect.any(Function)
+            onReset: expect.any(Function),
+            serialize: expect.any(Function)
         });
 
         // Call the onChange function and check that it passes the value correctly
@@ -28,14 +29,53 @@ describe('createStrQueryParam', () => {
         expect(props.onChange).toHaveBeenCalledWith('world');
     });
 
-    it('sets default value to an empty string if defaultValue is not provided', () => {
-        const props = {
-            value: 'hello',
-            onChange: jest.fn()
-        };
-        const result = createStrQueryParam(props);
+    describe('defaultValue', () => {
+        it('should be an empty string if defaultValue is not provided', () => {
+            const props = {
+                value: 'hello',
+                onChange: jest.fn()
+            };
+            const result = createStrQueryParam(props);
 
-        result.onReset();
-        expect(props.onChange).toHaveBeenCalledWith('');
+            result.onReset();
+            expect(props.onChange).toHaveBeenCalledWith('');
+        });
+
+        it('should be null if nullable is true and defaultValue is not provided', () => {
+            const props = {
+                value: 'hello',
+                onChange: jest.fn(),
+                nullable: true
+            };
+            const result = createStrQueryParam(props);
+
+            result.onReset();
+            expect(props.onChange).toHaveBeenCalledWith(null);
+        });
+
+        it('should be null if both nullable and optional are true and defaultValue is not provided', () => {
+            const props = {
+                value: 'hello',
+                onChange: jest.fn(),
+                nullable: true,
+                optional: true
+            };
+            const result = createStrQueryParam(props);
+
+            result.onReset();
+            expect(props.onChange).toHaveBeenCalledWith(null);
+        });
+
+        it('should be undefined if optional is true and defaultValue is not provided', () => {
+            const props = {
+                value: 'hello',
+                onChange: jest.fn(),
+                optional: true
+            };
+            const result = createStrQueryParam(props);
+
+            result.onReset();
+            expect(props.onChange).toHaveBeenCalledWith(undefined);
+        });
     });
 });

@@ -32,14 +32,53 @@ describe('createNumArrQueryParam', () => {
         expect(props.onChange).toHaveBeenCalledWith([4, 5, 6]);
     });
 
-    it('sets default value to an empty array if defaultValue is not provided', () => {
-        const props = {
-            value: [1, 2, 3],
-            onChange: jest.fn()
-        };
-        const result = createNumArrQueryParam(props);
+    describe('defaultValue', () => {
+        it('should be an empty array if defaultValue is not provided', () => {
+            const props = {
+                value: [1, 2, 3],
+                onChange: jest.fn()
+            };
+            const result = createNumArrQueryParam(props);
 
-        result.onReset();
-        expect(props.onChange).toHaveBeenCalledWith([]);
+            result.onReset();
+            expect(props.onChange).toHaveBeenCalledWith([]);
+        });
+
+        it('should be null if nullable is true and defaultValue is not provided', () => {
+            const props = {
+                value: [1, 2, 3],
+                onChange: jest.fn(),
+                nullable: true
+            };
+            const result = createNumArrQueryParam(props);
+
+            result.onReset();
+            expect(props.onChange).toHaveBeenCalledWith(null);
+        });
+
+        it('should be null if both nullable and optional are true and defaultValue is not provided', () => {
+            const props = {
+                value: [1, 2, 3],
+                onChange: jest.fn(),
+                nullable: true,
+                optional: true
+            };
+            const result = createNumArrQueryParam(props);
+
+            result.onReset();
+            expect(props.onChange).toHaveBeenCalledWith(null);
+        });
+
+        it('should be undefined if optional is true and defaultValue is not provided', () => {
+            const props = {
+                value: [1, 2, 3],
+                onChange: jest.fn(),
+                optional: true
+            };
+            const result = createNumArrQueryParam(props);
+
+            result.onReset();
+            expect(props.onChange).toHaveBeenCalledWith(undefined);
+        });
     });
 });
