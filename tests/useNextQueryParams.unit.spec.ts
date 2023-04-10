@@ -248,7 +248,7 @@ describe('useNextQueryParams (Unit)', () => {
                 {
                     test3: ['{"obj":"newObj"}']
                 },
-                true
+                false
             );
         });
         it('should not remove uncontrolled urlQuery params', () => {

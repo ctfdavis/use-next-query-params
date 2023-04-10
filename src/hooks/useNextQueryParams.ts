@@ -108,6 +108,8 @@ export function useNextQueryParams<T extends Record<string, unknown> = Record<st
                 prevHasUrlQueryChanged.current
             );
             prevHasUrlQueryChanged.current = false;
+        } else {
+            prevHasUrlQueryChanged.current = false;
         }
     };
 
