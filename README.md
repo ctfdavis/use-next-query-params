@@ -1,37 +1,40 @@
-# UseNextQueryParams
+<div align="center">
+  <h1> useNextQueryParams </h1>
+  <hr />
+</div>
 
----
-
-A React hook for linking states to query parameters in Next.js applications. This hook is designed
-specifically for Next.js, but could also be made compatible with other React routers with the
+A React hook for linking states to urlQuery parameters in [Next.js](https://nextjs.org) applications. This hook is designed
+specifically for Next.js, but is compatible with other React routers with the
 adapter design.
 
 ## Features ‍🔥
 
-- [➰ Link client states to query parameters](#getting-started)
+- [➰ Link client states to urlQuery parameters](#getting-started)
 - [⚡ Powerful API for customization](#advanced-usage)
-- [🎂 Convenient query param builders for common use cases](#convenient-query-param-builders)
+- [🎂 Convenient urlQuery param builders for common use cases](#convenient-query-param-builders)
 
 ## Demo 🌐
 
-_To be added_
+_Online demo to be added_
+
+See `app` folder for a demo Next.js application.
 
 ## Installation ⬇️
 
 ```bash
 # npm
-npm install use-next-query-params
+npm install use-next-urlQuery-params
 
 # yarn
-yarn add use-next-query-params
+yarn add use-next-urlQuery-params
 
 # pnpm
-pnpm add use-next-query-params
+pnpm add use-next-urlQuery-params
 ```
 
 ## Getting Started 👨‍💻
 
-### With Provider (Recommended)
+### With Provider
 
 In the `_app.jsx` (or `_app.tsx`) file, wrap your application in the `NextQueryParamsProvider`
 component:
@@ -39,7 +42,7 @@ component:
 ```jsx
 // pages/_app.jsx
 import { useRouter } from 'next/router';
-import { NextQueryParamsProvider, createNextRouterAdapter } from 'use-next-query-params';
+import { NextQueryParamsProvider, createNextRouterAdapter } from 'use-next-urlQuery-params';
 
 export default function App({ Component, pageProps }) {
     const router = useRouter();
@@ -51,7 +54,7 @@ export default function App({ Component, pageProps }) {
 }
 ```
 
-Then, in your page component, use the `useNextQueryParams` hook to link states to query parameters:
+Then, in your page component, use the `useNextQueryParams` hook to link states to urlQuery parameters:
 
 ```jsx
 // pages/example.jsx
@@ -60,11 +63,12 @@ import {
     createStrQueryParam,
     createNumQueryParam,
     useNextQueryParams
-} from 'use-next-query-params';
+} from 'use-next-urlQuery-params';
 
 export default function ExamplePage() {
     const [counter, setCounter] = useState(0);
     const [displayName, setDisplayName] = useState('');
+    // result example: http://localhost:3000/example?count=0&name=John+Doe
     useNextQueryParams({
         count: createNumQueryParam({
             value: counter,
@@ -79,15 +83,12 @@ export default function ExamplePage() {
         <>
             <button onClick={() => setCounter(counter + 1)}>Increment Count</button>
             <button onClick={() => setDisplayName('John Doe')}>Set Name</button>
+            <p>Count: {counter}</p>
+            <p>Name: {displayName}</p>
         </>
     );
 }
 ```
-
-> **_IMPORTANT:_** Only use the `useNextQueryParams` hook once per page. That's because the hook
-> will update the query parameters when the states change. If you use the hook multiple times, the
-> query parameters will be updated multiple times. This could cause an infinite loop of query
-> parameter updates.
 
 ### `createNextRouterAdapter`
 
@@ -101,23 +102,23 @@ settings for the adapter:
 ```jsx
 createNextRouterAdapter(router, {
     // Override the default settings for the adapter
-    mode: 'reset', // default is 'default', see below 'mode' section
+    mode: 'merge', // default is 'reset', see below 'mode' section
     shallow: true, // default is false
     replace: true // default is false, meaning router.push is used instead of router.replace
 });
 ```
 
 You can even override the `onChange` method of the adapter, taking entire control of handling the
-query:
+urlQuery:
 
 ```jsx
 import { ParsedUrlQuery } from 'querystring';
 
 createNextRouterAdapter(router, {
     // Override the default settings for the adapter
-    onChange: (query: ParsedUrlQuery) => {
-        // Do something with the query
-        // Update the query parameters your own way
+    onChange: (urlQuery: ParsedUrlQuery) => {
+        // Do something with the urlQuery
+        // Update the urlQuery parameters your own way
     }
 });
 ```
@@ -134,7 +135,7 @@ import {
     createNumQueryParam,
     useNextQueryParams,
     createNextRouterAdapter
-} from 'use-next-query-params';
+} from 'use-next-urlQuery-params';
 
 export default function ExamplePage() {
     const [counter, setCounter] = useState(0);
@@ -204,23 +205,24 @@ export default function ExamplePage() {
 
 ## Convenient Query Param Builders 🔨
 
-This package also provides type-safe, convenient query parameter builders for most common use cases:
+This package also provides type-safe, convenient urlQuery parameter builders for most common use cases:
 
 -   `createStrQueryParam`
 -   `createNumQueryParam`
 -   `createBoolQueryParam`
--   `createObjQueryParam`
+-   `createJSONRecordQueryParam`
+-   `createDateQueryParam`
 -   `createStrArrayQueryParam`
 -   `createNumArrayQueryParam`
 
-We use them to create query parameters for linking state variables in a `useNextQueryParams` hook.
+We use them to create urlQuery parameters for linking state variables in a `useNextQueryParams` hook.
 
 ### `createStrQueryParam`
 
-The `createStrQueryParam` function creates a query parameter for a string state.
+The `createStrQueryParam` function creates a urlQuery parameter for a string state.
 
 ```jsx
-import { createStrQueryParam } from 'use-next-query-params';
+import { useNextQueryParams, createStrQueryParam } from 'use-next-urlQuery-params';
 import { useState } from 'react';
 
 export default function ExamplePage() {
@@ -245,10 +247,10 @@ export default function ExamplePage() {
 
 ### `createNumQueryParam`
 
-The `createNumQueryParam` function creates a query parameter for a number state.
+The `createNumQueryParam` function creates a urlQuery parameter for a number state.
 
 ```jsx
-import { createNumQueryParam } from 'use-next-query-params';
+import { useNextQueryParams, createNumQueryParam } from 'use-next-urlQuery-params';
 import { useState } from 'react';
 
 export default function ExamplePage() {
@@ -273,10 +275,10 @@ export default function ExamplePage() {
 
 ### `createBoolQueryParam`
 
-The `createBoolQueryParam` function creates a query parameter for a boolean state.
+The `createBoolQueryParam` function creates a urlQuery parameter for a boolean state.
 
 ```jsx
-import { createBoolQueryParam } from 'use-next-query-params';
+import { useNextQueryParams, createBoolQueryParam } from 'use-next-urlQuery-params';
 import { useState } from 'react';
 
 export default function ExamplePage() {
@@ -299,27 +301,58 @@ export default function ExamplePage() {
 }
 ```
 
-### `createObjQueryParam`
+### `createJSONRecordQueryParam`
 
-The `createObjQueryParam` function creates a query parameter for an object state.
+The `createJSONRecordQueryParam` function creates a urlQuery parameter for a JSON record state.
 
 ```jsx
-import { createObjQueryParam } from 'use-next-query-params';
+import { useNextQueryParams, createJSONRecordQueryParam } from 'use-next-urlQuery-params';
 import { useState } from 'react';
 
 export default function ExamplePage() {
     const [user, setUser] = useState({ name: 'John Doe', age: 30 });
 
     useNextQueryParams({
-      user: createObjQueryParam({
+      user: createJSONRecordQueryParam({
         value: user,
         onChange: (value) => {
             // Do something with the value
             // Typically, you would update the state
             setUser(value);
         },
-        // required
+        // optional, default is {}
         defaultValue: { name: 'John Doe', age: 30 }
+      });
+    });
+
+    // ...
+}
+```
+
+### `createDateQueryParam`
+
+The `createDateQueryParam` function creates a urlQuery parameter for a date state.
+
+```jsx
+import { useNextQueryParams, createDateQueryParam } from 'use-next-urlQuery-params';
+import { useState } from 'react';
+
+export default function ExamplePage() {
+    const [date, setDate] = useState(new Date('2021-01-01'));
+
+    useNextQueryParams({
+      date: createDateQueryParam({
+        value: date,
+        onChange: (value: Date) => {
+            // Do something with the value
+            // Typically, you would update the state
+            setDate(value);
+        },
+        // optional, default is new Date()
+        defaultValue: new Date(),
+        // optional, default is false
+        // setting it to true will include the time in the ISO string format, i.e. YYYY-MM-DDTHH:mm:ss
+        withTime: true
       });
     });
 
@@ -329,10 +362,10 @@ export default function ExamplePage() {
 
 ### `createStrArrayQueryParam`
 
-The `createStrArrayQueryParam` function creates a query parameter for an array of strings.
+The `createStrArrayQueryParam` function creates a urlQuery parameter for an array of strings.
 
 ```jsx
-import { createStrArrayQueryParam } from 'use-next-query-params';
+import { useNextQueryParams, createStrArrayQueryParam } from 'use-next-urlQuery-params';
 import { useState } from 'react';
 
 export default function ExamplePage() {
@@ -357,10 +390,10 @@ export default function ExamplePage() {
 
 ### `createNumArrayQueryParam`
 
-The `createNumArrayQueryParam` function creates a query parameter for an array of numbers.
+The `createNumArrayQueryParam` function creates a urlQuery parameter for an array of numbers.
 
 ```jsx
-import { createNumArrayQueryParam } from 'use-next-query-params';
+import { useNextQueryParams, createNumArrayQueryParam } from 'use-next-urlQuery-params';
 import { useState } from 'react';
 
 export default function ExamplePage() {
@@ -396,9 +429,10 @@ type NextQueryParamsAdapterMode = 'default' | 'reset' | 'merge';
 
 type NextQueryParamsAdapter = {
     readonly isRouterReady: boolean;
-    readonly query: ParsedUrlQuery;
-    readonly onChange: (query: ParsedUrlQuery) => void;
+    readonly urlQuery: ParsedUrlQuery;
+    readonly onChange: (urlQuery: ParsedUrlQuery, isTriggeredByUrl: boolean) => void;
     readonly mode?: NextQueryParamsAdapterMode;
+    readonly customSerializeQueryParam?: SerializeQueryParam;
 };
 ```
 
@@ -407,19 +441,23 @@ This is useful if you are using a router different from Next.js' built-in router
 
 ```jsx
 // app.jsx
-import { NextQueryParamsProvider } from 'use-next-query-params';
+import { NextQueryParamsProvider } from 'use-next-urlQuery-params';
 import router from 'some-router'; // Your router
 
 export default function App() {
     const routerAdapter = {
         // if your app is client-side only, you can set this to true as router is always ready
         isRouterReady: true,
-        // your router's query object
-        query: router.query,
+        // your router's urlQuery object
+        urlQuery: router.urlQuery,
         // your router's push method
-        onChange: (query) => router.push({ query }),
-        // optional, default is 'default'
-        mode: 'default'
+        onChange: (urlQuery, isTriggeredByUrl) => {
+          // if the urlQuery is changed by the user navigation, use 'replace' to avoid adding a new entry to the history
+          const routingMethod = isTriggeredByUrl ? 'replace' : 'push';
+          router[routingMethod]({ urlQuery })
+        },
+        // optional, default is 'reset'
+        mode: 'merge'
     };
     return (
         <NextQueryParamsProvider adapter={routerAdapter}>
@@ -433,8 +471,7 @@ export default function App() {
 
 The `mode` property of the adapter interface can be set to one of the following values:
 
-- `default`: The default mode. The query parameters are updated when the state changes.
-- `reset`: The query parameters are reset to the default values when the state changes.
-- `merge`: The query parameters are merged with the default values when the state changes.
+- `reset`: The urlQuery parameters are reset to the default values when the state changes.
+- `merge`: The urlQuery parameters are merged with the default values when the state changes.
 
 See the [demo](#demo) for an example of each mode.
