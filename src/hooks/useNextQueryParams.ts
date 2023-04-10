@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { removeKeysFromObject } from '../utils/removeKeysFromObject';
 import { serializeQueryParamStates } from '../utils/query/serializeQueryParamStates';
 import { areUrlQueriesEqual } from '../utils/query/areUrlQueriesEqual';
@@ -9,6 +9,7 @@ import { QueryParamState } from '../types/QueryParamState';
 import { QueryParamStates } from '../types/QueryParamStates';
 import { NextQueryParamsAdapterMode } from '../types/NextQueryParamsAdapterMode';
 import { getChangedUrlQueryKeys } from '../utils/query/getChangedUrlQueryKeys';
+import { baseSerializeQueryParam } from '../utils/query/baseSerializeQueryParam';
 
 export function useNextQueryParams<T extends Record<string, unknown> = Record<string, any>>(
     params: NextQueryParams<T>,
@@ -16,6 +17,7 @@ export function useNextQueryParams<T extends Record<string, unknown> = Record<st
 ) {
     const [init, setInit] = useState(true);
     const [prevUrlQuery, setPrevUrlQuery] = useState<ParsedUrlQuery>({});
+    const prevHasUrlQueryChanged = useRef(false);
     const keys = Object.keys(params);
     const nextQueryParamsContextValues = useContext(NextQueryParamsContext);
     const contextAdapter = nextQueryParamsContextValues?.adapter;
@@ -67,6 +69,7 @@ export function useNextQueryParams<T extends Record<string, unknown> = Record<st
             const value = urlQuery[key];
             value && params[key].onChange(value);
         }
+        prevHasUrlQueryChanged.current = true;
         setPrevUrlQuery(urlQuery);
         setInit(false);
     };
@@ -83,15 +86,28 @@ export function useNextQueryParams<T extends Record<string, unknown> = Record<st
                         params[key].onReset();
                     }
                 } else {
-                    params[key].onChange(value);
+                    const serializedStateValue =
+                        params[key] && params[key].serialize
+                            ? params[key].serialize?.(params[key].value)
+                            : customSerializeQueryParam
+                            ? customSerializeQueryParam(params[key].value)
+                            : baseSerializeQueryParam(params[key].value);
+                    if (serializedStateValue !== value) {
+                        params[key].onChange(value);
+                        prevHasUrlQueryChanged.current = true;
+                    }
                 }
             }
             setPrevUrlQuery(urlQuery);
         } else if (haveQueryParamStatesChanged) {
-            onStateChange({
-                ...removeKeysFromObject(urlQuery, keys),
-                ...serializeQueryParamStates(queryParamStates, customSerializeQueryParam)
-            });
+            onStateChange(
+                {
+                    ...removeKeysFromObject(urlQuery, keys),
+                    ...serializeQueryParamStates(queryParamStates, customSerializeQueryParam)
+                },
+                prevHasUrlQueryChanged.current
+            );
+            prevHasUrlQueryChanged.current = false;
         }
     };
 

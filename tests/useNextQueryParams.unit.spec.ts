@@ -187,11 +187,14 @@ describe('useNextQueryParams (Unit)', () => {
                     onChange: onStateChange
                 }
             });
-            expect(onStateChange).toHaveBeenCalledWith({
-                test1: 'new test1',
-                test2: 'new test2',
-                test3: ['{"obj":"newObj"}']
-            });
+            expect(onStateChange).toHaveBeenCalledWith(
+                {
+                    test1: 'new test1',
+                    test2: 'new test2',
+                    test3: ['{"obj":"newObj"}']
+                },
+                true
+            );
         });
         it('should remove controlled urlQuery params when state values become invalid', () => {
             const { rerender } = renderHook(
@@ -241,9 +244,12 @@ describe('useNextQueryParams (Unit)', () => {
                     onChange: onStateChange
                 }
             });
-            expect(onStateChange).toHaveBeenCalledWith({
-                test3: ['{"obj":"newObj"}']
-            });
+            expect(onStateChange).toHaveBeenCalledWith(
+                {
+                    test3: ['{"obj":"newObj"}']
+                },
+                true
+            );
         });
         it('should not remove uncontrolled urlQuery params', () => {
             renderHook(() => {
@@ -255,12 +261,15 @@ describe('useNextQueryParams (Unit)', () => {
                     onChange: onStateChange
                 });
             });
-            expect(onStateChange).toHaveBeenCalledWith({
-                test1: 'test1',
-                test2: 'test2',
-                test3: ['{"obj":"obj"}'],
-                uncontrolled: 'uncontrolled'
-            });
+            expect(onStateChange).toHaveBeenCalledWith(
+                {
+                    test1: 'test1',
+                    test2: 'test2',
+                    test3: ['{"obj":"obj"}'],
+                    uncontrolled: 'uncontrolled'
+                },
+                true
+            );
         });
         describe('mode: "reset"', () => {
             it('should trigger `onReset` when urlQuery param is removed', () => {
@@ -332,12 +341,15 @@ describe('useNextQueryParams (Unit)', () => {
                 rerender({
                     test1: 'new test1'
                 });
-                expect(onStateChange).toHaveBeenCalledWith({
-                    // since we are not updating the state with jest.fn, the default value is used
-                    test1: 'test1',
-                    test2: 'test2',
-                    test3: ['{"obj":"obj"}']
-                });
+                expect(onStateChange).toHaveBeenCalledWith(
+                    {
+                        // since we are not updating the state with jest.fn, the default value is used
+                        test1: 'test1',
+                        test2: 'test2',
+                        test3: ['{"obj":"obj"}']
+                    },
+                    true
+                );
             });
         });
         describe('mode: "merge"', () => {
@@ -361,12 +373,15 @@ describe('useNextQueryParams (Unit)', () => {
                 rerender({
                     test1: 'new test1'
                 });
-                expect(onStateChange).toHaveBeenCalledWith({
-                    // since we are not updating the state with jest.fn, the default value is used
-                    test1: 'test1',
-                    test2: 'test2',
-                    test3: ['{"obj":"obj"}']
-                });
+                expect(onStateChange).toHaveBeenCalledWith(
+                    {
+                        // since we are not updating the state with jest.fn, the default value is used
+                        test1: 'test1',
+                        test2: 'test2',
+                        test3: ['{"obj":"obj"}']
+                    },
+                    true
+                );
             });
         });
     });

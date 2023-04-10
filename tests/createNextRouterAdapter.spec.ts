@@ -17,16 +17,16 @@ describe('createNextRouterAdapter', () => {
         const options: NextRouterAdapterOptions = { onChange: customOnChange };
         const adapter = createNextRouterAdapter(mockRouter, options);
 
-        adapter.onChange({ test: 'value' });
+        adapter.onChange({ test: 'value' }, false);
 
-        expect(customOnChange).toHaveBeenCalledWith({ test: 'value' });
+        expect(customOnChange).toHaveBeenCalledWith({ test: 'value' }, false);
     });
 
     it('calls router.push by default on onChange', () => {
         jest.spyOn(mockRouter, 'push');
         const adapter = createNextRouterAdapter(mockRouter);
 
-        adapter.onChange({ test: 'value' });
+        adapter.onChange({ test: 'value' }, false);
 
         expect(mockRouter.push).toHaveBeenCalledWith(
             {
@@ -43,7 +43,7 @@ describe('createNextRouterAdapter', () => {
         const options: NextRouterAdapterOptions = { replace: true };
         const adapter = createNextRouterAdapter(mockRouter, options);
 
-        adapter.onChange({ test: 'value' });
+        adapter.onChange({ test: 'value' }, false);
 
         expect(mockRouter.replace).toHaveBeenCalledWith(
             {
@@ -60,7 +60,7 @@ describe('createNextRouterAdapter', () => {
         const options: NextRouterAdapterOptions = { shallow: true };
         const adapter = createNextRouterAdapter(mockRouter, options);
 
-        adapter.onChange({ test: 'value' });
+        adapter.onChange({ test: 'value' }, false);
 
         expect(mockRouter.push).toHaveBeenCalledWith(
             {
@@ -69,6 +69,22 @@ describe('createNextRouterAdapter', () => {
             },
             undefined,
             { shallow: true }
+        );
+    });
+
+    it('should use replace when isTriggeredByUrl is true', () => {
+        jest.spyOn(mockRouter, 'replace');
+        const adapter = createNextRouterAdapter(mockRouter);
+
+        adapter.onChange({ test: 'value' }, true);
+
+        expect(mockRouter.replace).toHaveBeenCalledWith(
+            {
+                pathname: '',
+                query: { test: 'value' }
+            },
+            undefined,
+            { shallow: false }
         );
     });
 });

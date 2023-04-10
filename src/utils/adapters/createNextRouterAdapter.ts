@@ -9,17 +9,13 @@ export function createNextRouterAdapter(
 ): NextQueryParamsAdapter {
     const { mode, replace, shallow, onChange } = options || {};
 
-    const defaultOnChange = (query: ParsedUrlQuery) => {
-        const updateMethod = replace ? 'replace' : 'push';
-        const updatedQuery = {
-            ...nextRouter.query,
-            ...query
-        };
+    const defaultOnChange = (query: ParsedUrlQuery, isTriggeredByUrl: boolean) => {
+        const updateMethod = replace || isTriggeredByUrl ? 'replace' : 'push';
 
         nextRouter[updateMethod](
             {
                 pathname: nextRouter.pathname,
-                query: updatedQuery
+                query
             },
             undefined,
             { shallow: !!shallow }

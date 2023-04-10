@@ -146,15 +146,18 @@ describe('useNextQueryParams (Integration)', () => {
                         initialProps: initialRenderHookProps
                     }
                 );
-                expect(onStateChange).toHaveBeenCalledWith({
-                    str: 'str',
-                    num: '0',
-                    bool: 'true',
-                    obj: '{"obj":{"obj":"obj"}}',
-                    strArr: ['strArr'],
-                    numArr: ['0'],
-                    uncontrolled: 'uncontrolled'
-                });
+                expect(onStateChange).toHaveBeenCalledWith(
+                    {
+                        str: 'str',
+                        num: '0',
+                        bool: 'true',
+                        obj: '{"obj":{"obj":"obj"}}',
+                        strArr: ['strArr'],
+                        numArr: ['0'],
+                        uncontrolled: 'uncontrolled'
+                    },
+                    true
+                );
             });
         });
     });
@@ -204,15 +207,18 @@ describe('useNextQueryParams (Integration)', () => {
                     initialProps: initialRenderHookProps,
                     wrapper
                 });
-                expect(onStateChange).toHaveBeenCalledWith({
-                    str: 'str',
-                    num: '0',
-                    bool: 'true',
-                    obj: '{"obj":{"obj":"obj"}}',
-                    strArr: ['strArr'],
-                    numArr: ['0'],
-                    uncontrolled: 'uncontrolled'
-                });
+                expect(onStateChange).toHaveBeenCalledWith(
+                    {
+                        str: 'str',
+                        num: '0',
+                        bool: 'true',
+                        obj: '{"obj":{"obj":"obj"}}',
+                        strArr: ['strArr'],
+                        numArr: ['0'],
+                        uncontrolled: 'uncontrolled'
+                    },
+                    true
+                );
             });
         });
         describe('subsequent renders', () => {
