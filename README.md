@@ -35,11 +35,11 @@ pnpm add use-next-query-params
 
 ### With Provider
 
-In the `_app.jsx` (or `_app.tsx`) file, wrap your application in the `NextQueryParamsProvider`
+In the `_app.tsx` (or `_app.jsx`) file, wrap your application in the `NextQueryParamsProvider`
 component:
 
-```jsx
-// pages/_app.jsx
+```tsx
+// pages/_app.tsx
 import { useRouter } from 'next/router';
 import { NextQueryParamsProvider, createNextRouterAdapter } from 'use-next-query-params';
 
@@ -56,8 +56,8 @@ export default function App({ Component, pageProps }) {
 Then, in your page component, use the `useNextQueryParams` hook to link states to url query
 parameters:
 
-```jsx
-// pages/example.jsx
+```tsx
+// pages/example.tsx
 import { useState } from 'react';
 import {
     createStrQueryParam,
@@ -102,10 +102,10 @@ the provider.
 You can pass the second parameter to the `createNextRouterAdapter` function to override the default
 settings for the adapter:
 
-```jsx
+```tsx
 createNextRouterAdapter(router, {
     // Override the default settings for the adapter
-    mode: 'merge', // default is 'reset', see below 'mode' section
+    mode: 'merge', // default is 'reset', see advanced usage for more details
     shallow: true, // default is false
     replace: true // default is false, meaning router.push is used instead of router.replace
 });
@@ -130,8 +130,8 @@ createNextRouterAdapter(router, {
 
 You can also use the `useNextQueryParams` hook directly by passing the adapter as a parameter:
 
-```jsx
-// pages/example.jsx
+```tsx
+// pages/example.tsx
 import { useState } from 'react';
 import {
     createStrQueryParam,
@@ -173,8 +173,8 @@ default settings for the adapter set in the provider (if present).
 Note that all fields for the `adapter` prop are optional in the hook. That means you can override
 the settings you want to change.
 
-```jsx
-// pages/example.jsx
+```tsx
+// pages/example.tsx
 // ...
 
 export default function ExamplePage() {
