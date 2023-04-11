@@ -12,10 +12,10 @@ import { getChangedUrlQueryKeys } from '../utils/query/getChangedUrlQueryKeys';
 import { baseSerializeQueryParam } from '../utils/query/baseSerializeQueryParam';
 
 /**
- * Hook that registers states for query params and updates the url query params when the states change.
+ * The `useNextQueryParams` hook registers query param states and updates the URL query params when the states change.
  *
  * @param params - The query param states to register. {@link NextQueryParams}
- * @param adapter - The adapter to use for interacting with the url query params. {@link NextQueryParamsAdapter} If not provided, the adapter from the nearest {@link NextQueryParamsProvider} will be used.
+ * @param adapter - The router adapter to use for interacting with the URL query params {@link NextQueryParamsAdapter}. If not provided, the adapter from the nearest provider {@link NextQueryParamsProvider} will be used.
  *
  * @example
  * ```tsx

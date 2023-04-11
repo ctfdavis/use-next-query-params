@@ -10,7 +10,7 @@ type NextQueryParamsProviderProps = PropsWithChildren<NextQueryParamsContextProp
 export const NextQueryParamsContext = createContext<NextQueryParamsContextProps | null>(null);
 
 /**
- * This provider allows you to set up the adapter for `useNextQueryParams` hook.
+ * The `NextQueryParamsProvider` sets up a shared router adapter for `useNextQueryParams` hooks used within its children.
  *
  * @param props - the children and the adapter {@link NextQueryParamsAdapter}
  *

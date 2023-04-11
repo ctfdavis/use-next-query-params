@@ -12,9 +12,9 @@ export type NextQueryParamsAdapter = {
      */
     readonly urlQuery: ParsedUrlQuery;
     /**
-     * Callback that is called when urlQuery params are updated.
-     * @param urlQuery - The updated urlQuery params.
-     * @param isTriggeredByUrl - whether the urlQuery params were updated by the url.
+     * Callback that is called when URL query params are updated.
+     * @param urlQuery - The updated URL query params.
+     * @param isTriggeredByUrl - whether the URL query params were updated by the url (i.e. triggered by navigation).
      * isTriggeredByUrl is useful for determining whether to use `replace` or `push` when updating the url.
      */
     readonly onChange: (urlQuery: ParsedUrlQuery, isTriggeredByUrl: boolean) => void;
@@ -22,10 +22,10 @@ export type NextQueryParamsAdapter = {
      * Determines how query params are updated during navigation within the same page component.
      * @default 'reset'
      * @remarks
-     * - 'reset' - Updates urlQuery params to match the url urlQuery, and resets
-     *   any unmatched urlQuery params to their initial values, reflecting these changes in the url urlQuery.
-     * - 'merge' - Updates urlQuery params to match the url urlQuery, and then
-     *   merges any unmatched urlQuery params with their current values in the url urlQuery.
+     * - 'reset' - Updates query param states to match the URL query params, and resets
+     *   any unmatched query param states to their default values. Finally, reflect those changes in the URL query params.
+     * - 'merge' - Updates query param states to match the URL query params, and then
+     *   uses the current values of any unmatched query param states in the URL query.
      */
     readonly mode?: NextQueryParamsAdapterMode;
     /**

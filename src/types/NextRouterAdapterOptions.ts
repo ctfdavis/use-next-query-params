@@ -25,7 +25,7 @@ export type NextRouterAdapterOptions = {
     readonly shallow?: boolean;
     /**
      * Callback that is called when query param states are updated.
-     * @param query - The updated url query according to the latest query param states
+     * @param query - The updated URL query according to the latest query param states
      */
     readonly onChange?: (query: ParsedUrlQuery) => void;
 };

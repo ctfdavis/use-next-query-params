@@ -3,7 +3,7 @@ import { NextQueryParam } from './NextQueryParams';
 import { AllowedType } from './AllowedType';
 
 /**
- * Returned function by query param builders
+ * Function returned by query param builders
  *
  * @see Built-in query param builders:
  * {@link createStrQueryParam}

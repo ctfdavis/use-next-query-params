@@ -4,7 +4,7 @@ import { ParsedUrlQuery } from 'querystring';
 import { NextRouterAdapterOptions } from '../../types/NextRouterAdapterOptions';
 
 /**
- * Creates an adapter for use with `useNextQueryParams` hook.
+ * Creates a Next.js router adapter for the `useNextQueryParams` hook.
  *
  * @param nextRouter - The next router instance
  * @param options - The options for the adapter {@link NextRouterAdapterOptions}

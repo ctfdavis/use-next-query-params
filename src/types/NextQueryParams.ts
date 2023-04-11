@@ -4,11 +4,11 @@ export type NextQueryParam<T> = {
      */
     readonly value: T;
     /**
-     * A function that is called to update the query param state when the corresponding url query param changes.
+     * A function that is called to update the query param state when the corresponding URL query param changes.
      */
     readonly onChange: (value: string | string[]) => void;
     /**
-     * A function to reset the query param state to its initial value. It is called when `mode` in the adapter interface is set to `reset` {@link NextQueryParamsAdapter} and the corresponding url query param is removed.
+     * A function to reset the query param state to its default value. It is called when `mode` in the adapter interface is set to `reset` {@link NextQueryParamsAdapter} and the corresponding URL query param is removed.
      */
     readonly onReset: () => void;
     /**
