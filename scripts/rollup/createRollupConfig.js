@@ -21,14 +21,15 @@ export function createRollupConfig(options, callback) {
         },
         plugins: [
             external(),
-            commonjs({
-                include: /\/node_modules\//
-            }),
             typescript({
                 tsconfig: options.tsconfig,
                 clean: true,
-                exclude: ['**/__tests__', '**/*.test.ts', '**/*.spec.ts']
+                exclude: ['**/*.spec.ts', '**/*.spec.tsx']
             }),
+            options.format === 'umd' &&
+                commonjs({
+                    include: /\/node_modules\//
+                }),
             sourcemaps(),
             options.format !== 'esm' &&
                 terser({
