@@ -15,5 +15,6 @@
         "strict": true,
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true
-    }
+    },
+    "exclude": ["./cypress.config.ts", "**/*.spec.ts"]
 }
