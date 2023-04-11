@@ -196,7 +196,7 @@ export default function ExamplePage() {
         {
             // Override the provider settings for the adapter
             mode: 'merge',
-            onChange: (urlQuery, isTriggeredByURL) => {
+            onChange: (urlQuery, isTriggeredByUrl) => {
                 // Do something with the urlQuery
                 // Update the urlQuery parameters your own way
             }
@@ -632,7 +632,7 @@ type NextQueryParamsAdapterMode = 'reset' | 'merge';
 type NextQueryParamsAdapter = {
     readonly isRouterReady: boolean;
     readonly urlQuery: ParsedUrlQuery;
-    readonly onChange: (urlQuery: ParsedUrlQuery, isTriggeredByURL: boolean) => void;
+    readonly onChange: (urlQuery: ParsedUrlQuery, isTriggeredByUrl: boolean) => void;
     readonly mode?: NextQueryParamsAdapterMode;
     readonly customSerializeQueryParam?: SerializeQueryParam;
 };
@@ -654,9 +654,9 @@ export default function App() {
         // your router's query object
         urlQuery: router.query,
         // your router's push/replace method
-        onChange: (urlQuery, isTriggeredByURL) => {
+        onChange: (urlQuery, isTriggeredByUrl) => {
             // if the urlQuery is changed by the user navigation, use 'replace' to avoid adding a new entry to the history
-            const routingMethod = isTriggeredByURL ? 'replace' : 'push';
+            const routingMethod = isTriggeredByUrl ? 'replace' : 'push';
             router[routingMethod]({ urlQuery });
         },
         // optional, default is 'reset'
