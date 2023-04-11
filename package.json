@@ -1,7 +1,7 @@
 {
     "name": "use-next-query-params",
     "description": "A React hook designed for Next.js applications to link client states to query parameters.",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "main": "dist/index.cjs.js",
     "module": "dist/index.esm.mjs",
     "umd:main": "dist/index.umd.js",
