@@ -1,25 +1,24 @@
 <div align="center">
   <h1> useNextQueryParams </h1>
-  <hr />
 </div>
 
-A React hook for linking states to urlQuery parameters in [Next.js](https://nextjs.org) applications. This hook is designed
-specifically for Next.js, but is compatible with other React routers with the
+A React hook for linking states to query parameters in [Next.js](https://nextjs.org) applications.
+This hook is designed specifically for Next.js, but is compatible with other React routers with the
 adapter design.
 
-## Features ‍🔥
+## Features
 
-- [➰ Link client states to urlQuery parameters](#getting-started)
-- [⚡ Powerful API for customization](#advanced-usage)
-- [🎂 Convenient urlQuery param builders for common use cases](#convenient-query-param-builders)
+-   [➰ Link client states to query parameters](#getting-started)
+-   [⚡ Powerful API for customization](#advanced-usage)
+-   [🎂 Convenient query param builders for common use cases](#convenient-query-param-builders)
 
-## Demo 🌐
+## Demo
 
 _Online demo to be added_
 
 See `app` folder for a demo Next.js application.
 
-## Installation ⬇️
+## Installation
 
 ```bash
 # npm
@@ -32,7 +31,7 @@ yarn add use-next-query-params
 pnpm add use-next-query-params
 ```
 
-## Getting Started 👨‍💻
+## Getting Started
 
 ### With Provider
 
@@ -54,7 +53,8 @@ export default function App({ Component, pageProps }) {
 }
 ```
 
-Then, in your page component, use the `useNextQueryParams` hook to link states to url query parameters:
+Then, in your page component, use the `useNextQueryParams` hook to link states to url query
+parameters:
 
 ```jsx
 // pages/example.jsx
@@ -90,7 +90,7 @@ export default function ExamplePage() {
 }
 ```
 
-Note that `null` and `undefined` values are not added to the urlQuery parameters. This is to prevent
+Note that `null` and `undefined` values are not added to the query parameters. This is to prevent
 the query parameters from being polluted with unnecessary values.
 
 ### `createNextRouterAdapter`
@@ -114,7 +114,7 @@ createNextRouterAdapter(router, {
 You can even override the `onChange` method of the adapter, taking entire control of handling the
 `urlQuery`:
 
-```jsx
+```tsx
 import { ParsedUrlQuery } from 'querystring';
 
 createNextRouterAdapter(router, {
@@ -193,8 +193,11 @@ export default function ExamplePage() {
         },
         {
             // Override the provider settings for the adapter
-            shallow: true,
-            replace: true
+            mode: 'merge',
+            onChange: (urlQuery, isTriggeredByUrl) => {
+                // Do something with the urlQuery
+                // Update the urlQuery parameters your own way
+            }
         }
     );
     return (
@@ -206,7 +209,7 @@ export default function ExamplePage() {
 }
 ```
 
-## Convenient Query Param Builders 🔨
+## Convenient Query Param Builders
 
 This package also provides type-safe, convenient query parameter builders for most common use cases:
 
@@ -218,13 +221,14 @@ This package also provides type-safe, convenient query parameter builders for mo
 -   `createStrArrayQueryParam`
 -   `createNumArrayQueryParam`
 
-We use them to create urlQuery parameters for linking state variables in a `useNextQueryParams` hook.
+We use them to create query parameters for linking state variables in a `useNextQueryParams` hook.
 
 ### `createStrQueryParam`
 
-The `createStrQueryParam` function creates a urlQuery parameter for a string state.
+The `createStrQueryParam` function creates a query parameter for a string state.
 
-```jsx
+```tsx
+// pages/example.tsx
 import { useNextQueryParams, createStrQueryParam } from 'use-next-query-params';
 import { useState } from 'react';
 
@@ -232,16 +236,40 @@ export default function ExamplePage() {
     const [name, setName] = useState('John Doe');
 
     useNextQueryParams({
-      name: createStrQueryParam({
-        value: name,
-        onChange: (value: string) => {
-            // Do something with the value
-            // Typically, you would update the state
-            setName(value);
-        },
-        // optional, default is empty string ''
-        defaultValue: 'John Doe'
-      });
+        name: createStrQueryParam({
+            value: name,
+            onChange: (value: string) => {
+                // Do something with the value
+                // Typically, you would update the state
+                setName(value);
+            },
+            // optional, default is empty string ''
+            defaultValue: 'John Doe',
+            // optional, must be set to true if value can be `undefined`
+            optional: false,
+            // optional, must be set to true if value can be `null`
+            nullable: false,
+            // optional; if you provide a custom `deserialize` function, you should also provide a
+            // a custom `serialize` function. They should be inverses of each other.
+            // note that the return type here can be `undefined` or `null` if `optional` or `nullable` is set to true
+            deserialize: (value: string | string[]): string => {
+                // Do something with the value
+                // Typically, you would parse the value from the url query to the desired state
+                return value;
+            },
+            // optional; if you provide a custom `serialize` function, you should also provide a
+            // a custom `deserialize` function. They should be inverses of each other.
+            // note that value here can be `undefined` or `null` if `optional` or `nullable` is set to true
+            serialize: (value: string): string | string[] | undefined | null => {
+                // Do something with the value
+                // Typically, you would stringify the value
+                if (Array.isArray(v)) {
+                    props.onChange(v[0]);
+                } else {
+                    props.onChange(v);
+                }
+            }
+        })
     });
 
     // ...
@@ -250,9 +278,10 @@ export default function ExamplePage() {
 
 ### `createNumQueryParam`
 
-The `createNumQueryParam` function creates a urlQuery parameter for a number state.
+The `createNumQueryParam` function creates a query parameter for a number state.
 
-```jsx
+```tsx
+// pages/example.tsx
 import { useNextQueryParams, createNumQueryParam } from 'use-next-query-params';
 import { useState } from 'react';
 
@@ -260,16 +289,47 @@ export default function ExamplePage() {
     const [count, setCount] = useState(0);
 
     useNextQueryParams({
-      count: createNumQueryParam({
-        value: count,
-        onChange: (value: number) => {
-            // Do something with the value
-            // Typically, you would update the state
-            setCount(value);
-        },
-        // optional, default is 0
-        defaultValue: 0
-      });
+        count: createNumQueryParam({
+            value: count,
+            onChange: (value: number) => {
+                // Do something with the value
+                // Typically, you would update the state
+                setCount(value);
+            },
+            // optional, default is 0
+            defaultValue: 0,
+            // optional, must be set to true if value can be `undefined`
+            optional: false,
+            // optional, must be set to true if value can be `null`
+            nullable: false,
+            // optional; if you provide a custom `deserialize` function, you should also provide a
+            // a custom `serialize` function. They should be inverses of each other.
+            // note that the return type here can be `undefined` or `null` if `optional` or `nullable` is set to true
+            deserialize: (value: string | string[]): number => {
+                // Do something with the value
+                // Typically, you would parse the value from the url query to the desired state
+                if (Array.isArray(value)) {
+                    return Number(value[0]);
+                }
+                return Number(value);
+            },
+            // optional; if you provide a custom `serialize` function, you should also provide a
+            // a custom `deserialize` function. They should be inverses of each other.
+            // note that value here can be `undefined` or `null` if `optional` or `nullable` is set to true
+            serialize: (value: number): string | string[] | undefined | null => {
+                // Do something with the value
+                // Typically, you would stringify the value
+                if (Array.isArray(v)) {
+                    if (!isNaN(Number(v[0]))) {
+                        props.onChange(Number(v[0]));
+                    }
+                } else {
+                    if (!isNaN(Number(v))) {
+                        props.onChange(Number(v));
+                    }
+                }
+            }
+        })
     });
 
     // ...
@@ -278,9 +338,10 @@ export default function ExamplePage() {
 
 ### `createBoolQueryParam`
 
-The `createBoolQueryParam` function creates a urlQuery parameter for a boolean state.
+The `createBoolQueryParam` function creates a query parameter for a boolean state.
 
-```jsx
+```tsx
+// pages/example.tsx
 import { useNextQueryParams, createBoolQueryParam } from 'use-next-query-params';
 import { useState } from 'react';
 
@@ -288,16 +349,45 @@ export default function ExamplePage() {
     const [isDark, setIsDark] = useState(false);
 
     useNextQueryParams({
-      isDark: createBoolQueryParam({
-        value: isDark,
-        onChange: (value: boolean) => {
-            // Do something with the value
-            // Typically, you would update the state
-            setIsDark(value);
-        },
-        // optional, default is false
-        defaultValue: false
-      });
+        dark: createBoolQueryParam({
+            value: isDark,
+            onChange: (value: boolean) => {
+                // Do something with the value
+                // Typically, you would update the state
+                setIsDark(value);
+            },
+            // optional, default is false
+            defaultValue: false,
+            // optional, must be set to true if value can be `undefined`
+            optional: false,
+            // optional, must be set to true if value can be `null`
+            nullable: false,
+            // optional; if you provide a custom `deserialize` function, you should also provide a
+            // a custom `serialize` function. They should be inverses of each other.
+            // note that the return type here can be `undefined` or `null` if `optional` or `nullable` is set to true
+            deserialize: (value: string | string[]): boolean => {
+                // Do something with the value
+                // Typically, you would parse the value from the url query to the desired state
+                if (Array.isArray(value)) {
+                    return value[0] === 'true';
+                }
+                return value === 'true';
+            },
+            // optional; if you provide a custom `serialize` function, you should also provide a
+            // a custom `deserialize` function. They should be inverses of each other.
+            // note that value here can be `undefined` or `null` if `optional` or `nullable` is set to true
+            serialize: (value: boolean): string | string[] | undefined | null => {
+                // Do something with the value
+                // Typically, you would stringify the value
+                if (v === undefined || v === null) {
+                    return v;
+                }
+                if (props.withTime) {
+                    return v.toISOString().split('.')[0];
+                }
+                return v.toISOString().split('T')[0];
+            }
+        })
     });
 
     // ...
@@ -306,9 +396,10 @@ export default function ExamplePage() {
 
 ### `createJSONRecordQueryParam`
 
-The `createJSONRecordQueryParam` function creates a urlQuery parameter for a JSON record state.
+The `createJSONRecordQueryParam` function creates a query parameter for a JSON record state.
 
-```jsx
+```tsx
+// pages/example.tsx
 import { useNextQueryParams, createJSONRecordQueryParam } from 'use-next-query-params';
 import { useState } from 'react';
 
@@ -316,16 +407,42 @@ export default function ExamplePage() {
     const [user, setUser] = useState({ name: 'John Doe', age: 30 });
 
     useNextQueryParams({
-      user: createJSONRecordQueryParam({
-        value: user,
-        onChange: (value) => {
-            // Do something with the value
-            // Typically, you would update the state
-            setUser(value);
-        },
-        // optional, default is {}
-        defaultValue: { name: 'John Doe', age: 30 }
-      });
+        user: createJSONRecordQueryParam({
+            value: user,
+            onChange: (value) => {
+                // Do something with the value
+                // Typically, you would update the state
+                setUser(value);
+            },
+            // optional, default is {}
+            defaultValue: { name: 'John Doe', age: 30 },
+            // optional, must be set to true if value can be `undefined`
+            optional: false,
+            // optional, must be set to true if value can be `null`
+            nullable: false,
+            // optional; if you provide a custom `deserialize` function, you should also provide a
+            // a custom `serialize` function. They should be inverses of each other.
+            // note that the return type here can be `undefined` or `null` if `optional` or `nullable` is set to true
+            deserialize: (value: string | string[]): Record<string, any> => {
+                // Do something with the value
+                // Typically, you would parse the value from the url query to the desired state
+                if (Array.isArray(value)) {
+                    return new Date(value[0]);
+                }
+                return new Date(value);
+            },
+            // optional; if you provide a custom `serialize` function, you should also provide a
+            // a custom `deserialize` function. They should be inverses of each other.
+            // note that value here can be `undefined` or `null` if `optional` or `nullable` is set to true
+            serialize: (value: Record<string, any>): string | string[] | undefined | null => {
+                // Do something with the value
+                // Typically, you would stringify the value
+                if (v === undefined || v === null) {
+                    return v;
+                }
+                return JSON.stringify(v);
+            }
+        })
     });
 
     // ...
@@ -334,9 +451,10 @@ export default function ExamplePage() {
 
 ### `createDateQueryParam`
 
-The `createDateQueryParam` function creates a urlQuery parameter for a date state.
+The `createDateQueryParam` function creates a query parameter for a date state.
 
-```jsx
+```tsx
+// pages/example.tsx
 import { useNextQueryParams, createDateQueryParam } from 'use-next-query-params';
 import { useState } from 'react';
 
@@ -344,19 +462,49 @@ export default function ExamplePage() {
     const [date, setDate] = useState(new Date('2021-01-01'));
 
     useNextQueryParams({
-      date: createDateQueryParam({
-        value: date,
-        onChange: (value: Date) => {
-            // Do something with the value
-            // Typically, you would update the state
-            setDate(value);
-        },
-        // optional, default is new Date()
-        defaultValue: new Date(),
-        // optional, default is false
-        // setting it to true will include the time in the ISO string format, i.e. YYYY-MM-DDTHH:mm:ss
-        withTime: true
-      });
+        date: createDateQueryParam({
+            value: date,
+            onChange: (value: Date) => {
+                // Do something with the value
+                // Typically, you would update the state
+                setDate(value);
+            },
+            // optional, default is new Date()
+            defaultValue: new Date(),
+            // optional, default is false
+            // setting it to true will include the time in the ISO string format, i.e. YYYY-MM-DDTHH:mm:ss
+            // setting it to false will only include the date in the ISO string format, i.e. YYYY-MM-DD
+            withTime: true,
+            // optional, must be set to true if value can be `undefined`
+            optional: false,
+            // optional, must be set to true if value can be `null`
+            nullable: false,
+            // optional; if you provide a custom `deserialize` function, you should also provide a
+            // a custom `serialize` function. They should be inverses of each other.
+            // note that the return type here can be `undefined` or `null` if `optional` or `nullable` is set to true
+            deserialize: (value: string | string[]): Date => {
+                // Do something with the value
+                // Typically, you would parse the value from the url query to the desired state
+                if (Array.isArray(value)) {
+                    return new Date(value[0]);
+                }
+                return new Date(value);
+            },
+            // optional; if you provide a custom `serialize` function, you should also provide a
+            // a custom `deserialize` function. They should be inverses of each other.
+            // note that value here can be `undefined` or `null` if `optional` or `nullable` is set to true
+            serialize: (value: Date): string | string[] | undefined | null => {
+                // Do something with the value
+                // Typically, you would stringify the value
+                if (v === undefined || v === null) {
+                    return v;
+                }
+                if (props.withTime) {
+                    return v.toISOString().split('.')[0];
+                }
+                return v.toISOString().split('T')[0];
+            }
+        })
     });
 
     // ...
@@ -365,9 +513,10 @@ export default function ExamplePage() {
 
 ### `createStrArrayQueryParam`
 
-The `createStrArrayQueryParam` function creates a urlQuery parameter for an array of strings.
+The `createStrArrayQueryParam` function creates a query parameter for an array of strings.
 
-```jsx
+```tsx
+// pages/example.tsx
 import { useNextQueryParams, createStrArrayQueryParam } from 'use-next-query-params';
 import { useState } from 'react';
 
@@ -375,16 +524,40 @@ export default function ExamplePage() {
     const [tags, setTags] = useState(['tag1', 'tag2']);
 
     useNextQueryParams({
-      tags: createStrArrayQueryParam({
-        value: tags,
-        onChange: (value: string[]) => {
-            // Do something with the value
-            // Typically, you would update the state
-            setTags(value);
-        },
-        // optional, default is []
-        defaultValue: ['tag1', 'tag2']
-      });
+        tags: createStrArrayQueryParam({
+            value: tags,
+            onChange: (value: string[]) => {
+                // Do something with the value
+                // Typically, you would update the state
+                setTags(value);
+            },
+            // optional, default is []
+            defaultValue: ['tag1', 'tag2'],
+            // optional, must be set to true if value can be `undefined`
+            optional: false,
+            // optional, must be set to true if value can be `null`
+            nullable: false,
+            // optional; if you provide a custom `deserialize` function, you should also provide a
+            // a custom `serialize` function. They should be inverses of each other.
+            // note that the return type here can be `undefined` or `null` if `optional` or `nullable` is set to true
+            deserialize: (value: string | string[]): string[] => {
+                // Do something with the value
+                // Typically, you would parse the value from the url query to the desired state
+                if (Array.isArray(v)) {
+                    props.onChange(v);
+                } else {
+                    props.onChange([v]);
+                }
+            },
+            // optional; if you provide a custom `serialize` function, you should also provide a
+            // a custom `deserialize` function. They should be inverses of each other.
+            // note that value here can be `undefined` or `null` if `optional` or `nullable` is set to true
+            serialize: (value: string[]): string | string[] | undefined | null => {
+                // Do something with the value
+                // Typically, you would stringify the value
+                return v;
+            }
+        })
     });
 
     // ...
@@ -393,9 +566,10 @@ export default function ExamplePage() {
 
 ### `createNumArrayQueryParam`
 
-The `createNumArrayQueryParam` function creates a urlQuery parameter for an array of numbers.
+The `createNumArrayQueryParam` function creates a query parameter for an array of numbers.
 
-```jsx
+```tsx
+// pages/example.tsx
 import { useNextQueryParams, createNumArrayQueryParam } from 'use-next-query-params';
 import { useState } from 'react';
 
@@ -403,16 +577,39 @@ export default function ExamplePage() {
     const [numbers, setNumbers] = useState([1, 2, 3]);
 
     useNextQueryParams({
-      numbers: createNumArrayQueryParam({
-        value: numbers,
-        onChange: (value: number[]) => {
-            // Do something with the value
-            // Typically, you would update the state
-            setNumbers(value);
-        },
-        // optional, default is []
-        defaultValue: [1, 2, 3]
-      });
+        numbers: createNumArrayQueryParam({
+            value: numbers,
+            onChange: (value: number[]) => {
+                // Do something with the value
+                // Typically, you would update the state
+                setNumbers(value);
+            },
+            // optional, default is []
+            defaultValue: [1, 2, 3],
+            // optional, must be set to true if value can be `undefined`
+            optional: false,
+            // optional, must be set to true if value can be `null`
+            nullable: false,
+            // optional; if you provide a custom `deserialize` function, you should also provide a
+            // a custom `serialize` function. They should be inverses of each other.
+            // note that the return type here can be `undefined` or `null` if `optional` or `nullable` is set to true
+            deserialize: (value: string | string[]): number[] => {
+                // Do something with the value
+                // Typically, you would parse the value from the url query to the desired state
+                if (Array.isArray(v)) {
+                    return v.map((v) => Number(v));
+                }
+                return [Number(v)];
+            },
+            // optional; if you provide a custom `serialize` function, you should also provide a
+            // a custom `deserialize` function. They should be inverses of each other.
+            // note that value here can be `undefined` or `null` if `optional` or `nullable` is set to true
+            serialize: (value: number[]): string | string[] | undefined | null => {
+                // Do something with the value
+                // Typically, you would stringify the value
+                return v.map((v) => v.toString());
+            }
+        })
     });
 
     // ...
@@ -439,8 +636,9 @@ type NextQueryParamsAdapter = {
 };
 ```
 
-You can provide a customized adapter to the `NextQueryParamsProvider` provider or `useNextQueryParams` hook by passing it as the second argument.
-This is useful if you are using a router different from Next.js' built-in router.
+You can provide a customized adapter to the `NextQueryParamsProvider` provider or
+`useNextQueryParams` hook by passing it as the second argument. This is useful if you are using a
+router different from Next.js' built-in router.
 
 ```jsx
 // app.jsx
@@ -451,13 +649,13 @@ export default function App() {
     const routerAdapter = {
         // if your app is client-side only, you can set this to true as router is always ready
         isRouterReady: true,
-        // your router's urlQuery object
-        urlQuery: router.urlQuery,
-        // your router's push method
+        // your router's query object
+        urlQuery: router.query,
+        // your router's push/replace method
         onChange: (urlQuery, isTriggeredByUrl) => {
-          // if the urlQuery is changed by the user navigation, use 'replace' to avoid adding a new entry to the history
-          const routingMethod = isTriggeredByUrl ? 'replace' : 'push';
-          router[routingMethod]({ urlQuery })
+            // if the urlQuery is changed by the user navigation, use 'replace' to avoid adding a new entry to the history
+            const routingMethod = isTriggeredByUrl ? 'replace' : 'push';
+            router[routingMethod]({ urlQuery });
         },
         // optional, default is 'reset'
         mode: 'merge'
@@ -474,7 +672,99 @@ export default function App() {
 
 The `mode` property of the adapter interface can be set to one of the following values:
 
-- `reset`: The urlQuery parameters are reset to the default values when the state changes.
-- `merge`: The urlQuery parameters are merged with the default values when the state changes.
+-   `reset`: The query parameters are reset to the default values when the state changes.
+-   `merge`: The query parameters are merged with the default values when the state changes.
 
 See the [demo](#demo) for an example of each mode.
+
+### Using `useNextQueryParams` without builder functions
+
+You can also use `useNextQueryParams` without builder functions by passing objects like the
+following:
+
+```tsx
+// pages/example.tsx
+import { useNextQueryParams } from 'use-next-query-params';
+import { useState } from 'react';
+
+export default function ExamplePage() {
+    const [name, setName] = useState('John Doe');
+    const [age, setAge] = useState(30);
+
+    useNextQueryParams({
+        name: {
+            value: name,
+            onChange: (value: string) => {
+                // Do something with the value
+                // Typically, you would deserialize the value from the url query to the desired state
+                setName(yourDeserializationFunction(value));
+            },
+            onReset: () => {
+                // Do something when the value is reset
+                // This will happen when `mode` is set to `reset` and the query parameter is removed from the url
+                // Typically, you would update the state to its default value
+                setName('John Doe');
+            },
+            // optional; if you provide a custom `serialize` function, you should also provide a
+            // a custom `deserialize` function. They should be inverses of each other.
+            // note that value here can be `undefined` or `null` if `optional` or `nullable` is set to true
+            serialize: (value: string): string | undefined | null => {
+                // Do something with the value
+                // Typically, you would stringify the value
+                return value;
+            }
+        }
+    });
+
+    // ...
+}
+```
+
+### Create your custom builders
+
+The package also exports a `createQueryParamFunctionFactory` function that can be used to create your own builder functions. See example usage below:
+
+```tsx
+// utils/createMyQueryParam.ts
+
+import { useNextQueryParams, createQueryParamFunctionFactory } from 'use-next-query-params';
+
+// note that props have the below type
+// {
+//     value: AllowedType<T, N, O>;
+//     onChange: (value: AllowedType<T, N, O>) => void;
+//     /**
+//      * Deserialize a value from a parsed url query into the type of the query param.
+//      * @note If you are using a custom `serialize` function, you should also provide a custom `deserialize` function. They must be inverses of each other.
+//      */
+//     deserialize?: (value: string | string[]) => AllowedType<T, N, O>;
+//     /**
+//      * Serialize a value from the query param into a parsed url query (i.e., string or array of strings).
+//      * @note If you are using a custom `deserialize` function, you should also provide a custom `serialize` function. They must be inverses of each other.
+//      */
+//     serialize?: (value: AllowedType<T, N, O>) => string | string[];
+//     defaultValue?: AllowedType<T, N, O>;
+//     nullable?: N;
+//     optional?: O;
+// }
+export const createMyQueryParam = createQueryParamFunctionFactory<MyOwnType>((props) =>  ({
+    // provide your own implementation in the below fields
+
+    // note that the value here is of type `AllowedType<T, N, O>`
+    // T is the type of the query param, here it is `MyOwnType`
+    // N and O are boolean values that indicate whether the query param is nullable and/or optional
+    value: props.value,
+    // `onChange` is a function that takes a value of type `AllowedType<T, N, O>` and updates the url query param
+    onChange: props.onChange,
+    // optional, `defaultValue` is the default value of the query param
+    defaultValue: props.defaultValue,
+    // optional, `optional` is a boolean value that indicates whether the query param is optional
+    optional: props.optional,
+    // optional, `nullable` is a boolean value that indicates whether the query param is nullable
+    nullable: props.nullable,
+    // optional, `deserialize` is a function that takes a value of type `string | string[]` and deserializes it into a value of type `AllowedType<T, N, O>`
+    deserialize: props.deserialize,
+    // optional, `serialize` is a function that takes a value of type `AllowedType<T, N, O>` and serializes it into a value of type `string | string[]`
+    serialize: props.serialize,
+}));
+```
