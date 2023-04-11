@@ -3,7 +3,7 @@
 </div>
 
 A React hook for linking states to query parameters in [Next.js](https://nextjs.org) applications.
-This hook is designed specifically for Next.js, but is compatible with other React routers with the
+This hook is designed specifically for Next.js, but compatible with other React routers with the
 adapter design.
 
 ## Features
@@ -14,9 +14,11 @@ adapter design.
 
 ## Demo
 
-_Online demo to be added_
+Demo application: https://use-next-query-params.vercel.app/
 
-See `app` folder for a demo Next.js application.
+Codesandbox: https://codesandbox.io/p/sandbox/use-next-query-params-demo-qqwbst
+
+Also see `app` folder for a demo Next.js application used for Cypress tests.
 
 ## Installation
 
@@ -121,7 +123,7 @@ createNextRouterAdapter(router, {
     // Override the default settings for the adapter
     onChange: (urlQuery: ParsedUrlQuery) => {
         // Do something with the urlQuery
-        // Update the urlQuery parameters your own way
+        // Update the query parameters your own way
     }
 });
 ```
@@ -221,7 +223,7 @@ This package also provides type-safe, convenient query parameter builders for mo
 -   `createStrArrayQueryParam`
 -   `createNumArrayQueryParam`
 
-We use them to create query parameters for linking state variables in a `useNextQueryParams` hook.
+We use them to create query parameters for linking state variables inside the `useNextQueryParams` hook.
 
 ### `createStrQueryParam`
 
@@ -618,14 +620,14 @@ export default function ExamplePage() {
 
 ## Advanced Usage
 
-### Providing a Customized Adapter
+### Providing a Custom Adapter
 
 The adapter interface is defined as follows:
 
 ```ts
 import { ParsedUrlQuery } from 'querystring';
 
-type NextQueryParamsAdapterMode = 'default' | 'reset' | 'merge';
+type NextQueryParamsAdapterMode = 'reset' | 'merge';
 
 type NextQueryParamsAdapter = {
     readonly isRouterReady: boolean;
@@ -636,9 +638,9 @@ type NextQueryParamsAdapter = {
 };
 ```
 
-You can provide a customized adapter to the `NextQueryParamsProvider` provider or
-`useNextQueryParams` hook by passing it as the second argument. This is useful if you are using a
-router different from Next.js' built-in router.
+You can provide a custom adapter to the `NextQueryParamsProvider` provider or
+`useNextQueryParams` hook (as the second argument). This is useful if you are using a
+router different from Next.js built-in router.
 
 ```jsx
 // app.jsx
@@ -670,7 +672,7 @@ export default function App() {
 
 ### Router Adapter `mode`
 
-The `mode` property of the adapter interface can be set to one of the following values:
+The `mode` property of the adapter can be set to one of the following values:
 
 -   `reset`: The query parameters are reset to the default values when the state changes.
 -   `merge`: The query parameters are merged with the default values when the state changes.
@@ -691,13 +693,16 @@ export default function ExamplePage() {
     const [name, setName] = useState('John Doe');
     const [age, setAge] = useState(30);
 
-    useNextQueryParams({
+    useNextQueryParams<{
+        name: string; // you can explicitly define typings for the query parameters here; the hook will try to infer them if you don't
+        age: number;
+    }>({
         name: {
             value: name,
             onChange: (value: string) => {
                 // Do something with the value
                 // Typically, you would deserialize the value from the url query to the desired state
-                setName(yourDeserializationFunction(value));
+                setName(yourDeserializationFunctionForStrings(value));
             },
             onReset: () => {
                 // Do something when the value is reset
@@ -706,12 +711,32 @@ export default function ExamplePage() {
                 setName('John Doe');
             },
             // optional; if you provide a custom `serialize` function, you should also provide a
-            // a custom `deserialize` function. They should be inverses of each other.
-            // note that value here can be `undefined` or `null` if `optional` or `nullable` is set to true
+            // a custom `deserialize` function used in the `onChange` function (as shown above). They should be inverses of each other.
             serialize: (value: string): string | undefined | null => {
                 // Do something with the value
                 // Typically, you would stringify the value
                 return value;
+            }
+        },
+        age: {
+            value: age,
+            onChange: (value: number) => {
+                // Do something with the value
+                // Typically, you would deserialize the value from the url query to the desired state
+                setAge(yourDeserializationFunctionForNumbers(value));
+            },
+            onReset: () => {
+                // Do something when the value is reset
+                // This will happen when `mode` is set to `reset` and the query parameter is removed from the url
+                // Typically, you would update the state to its default value
+                setAge(30);
+            },
+            // optional; if you provide a custom `serialize` function, you should also provide a
+            // a custom `deserialize` function used in the `onChange` function (as shown above). They should be inverses of each other.
+            serialize: (value: number): string | undefined | null => {
+                // Do something with the value
+                // Typically, you would stringify the value
+                return value.toString();
             }
         }
     });
