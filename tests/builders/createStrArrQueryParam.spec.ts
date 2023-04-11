@@ -77,4 +77,17 @@ describe('createStrArrQueryParam', () => {
             expect(props.onChange).toHaveBeenCalledWith(undefined);
         });
     });
+    describe('custom deserialize function', () => {
+        it('should use the custom deserialize function', () => {
+            const props = {
+                value: ['hello', 'world'],
+                onChange: jest.fn(),
+                deserialize: (value: string | string[]) => ['FOO', 'BAR']
+            };
+            const result = createStrArrQueryParam(props);
+
+            result.onChange(['']);
+            expect(props.onChange).toHaveBeenCalledWith(['FOO', 'BAR']);
+        });
+    });
 });

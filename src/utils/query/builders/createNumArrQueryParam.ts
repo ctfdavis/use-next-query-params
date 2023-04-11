@@ -4,6 +4,10 @@ export const createNumArrQueryParam = createQueryParamFunctionFactory<number[]>(
     value: props.value,
     serialize: props.serialize,
     onChange: (v) => {
+        if (props.deserialize) {
+            props.onChange(props.deserialize(v));
+            return;
+        }
         if (Array.isArray(v)) {
             props.onChange(v.filter((v) => !isNaN(Number(v))).map((v) => Number(v)));
         } else {

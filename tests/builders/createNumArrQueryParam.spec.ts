@@ -81,4 +81,17 @@ describe('createNumArrQueryParam', () => {
             expect(props.onChange).toHaveBeenCalledWith(undefined);
         });
     });
+    describe('custom deserialize function', () => {
+        it('should call `onChange` with custom deserialize function', () => {
+            const props = {
+                value: [1, 2, 3],
+                onChange: jest.fn(),
+                deserialize: (v: string | string[]) => [4, 5, 6]
+            };
+            const result = createNumArrQueryParam(props);
+
+            result.onChange('2020-01-03');
+            expect(props.onChange).toHaveBeenCalledWith([4, 5, 6]);
+        });
+    });
 });

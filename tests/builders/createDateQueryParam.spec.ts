@@ -1,7 +1,7 @@
-import { createDateQueryParam } from '../../src/utils/query/builders/createDateQueryParam';
+import { createDateQueryParam } from '../../src';
 
 describe('createDateQueryParam', () => {
-    it('returns an object with the correct value, onChange and serialize functions', () => {
+    it('should return an object with the correct value, onChange and serialize functions', () => {
         const props = {
             value: new Date('2020-01-01'),
             onChange: jest.fn(),
@@ -32,7 +32,7 @@ describe('createDateQueryParam', () => {
         expect(result.serialize?.(new Date('2020-01-03'))).toEqual('2020-01-03');
         expect(result.serialize?.(new Date('2020-01-03T12:00:00'))).toEqual('2020-01-03');
     });
-    it('returns an object with the serialize function when withTime is true', () => {
+    it('should return an object with the serialize function when withTime is true', () => {
         const props = {
             value: new Date('2020-01-01'),
             onChange: jest.fn(),
@@ -44,5 +44,18 @@ describe('createDateQueryParam', () => {
 
         // Call the serialize function and check that it returns the correct value
         expect(result.serialize?.(new Date('2020-01-03'))).toEqual('2020-01-03T00:00:00');
+    });
+    describe('custom deserialize function', () => {
+        it('should call `onChange` with custom deserialize function', () => {
+            const props = {
+                value: new Date('2020-01-01'),
+                onChange: jest.fn(),
+                deserialize: (v: string | string[]) => new Date('1999-01-01')
+            };
+            const result = createDateQueryParam(props);
+
+            result.onChange('2020-01-03');
+            expect(props.onChange).toHaveBeenCalledWith(new Date('1999-01-01'));
+        });
     });
 });

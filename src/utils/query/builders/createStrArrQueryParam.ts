@@ -4,6 +4,10 @@ export const createStrArrQueryParam = createQueryParamFunctionFactory<string[]>(
     value: props.value,
     serialize: props.serialize,
     onChange: (v) => {
+        if (props.deserialize) {
+            props.onChange(props.deserialize(v));
+            return;
+        }
         if (Array.isArray(v)) {
             props.onChange(v);
         } else {

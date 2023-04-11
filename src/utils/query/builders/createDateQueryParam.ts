@@ -19,6 +19,10 @@ export const createDateQueryParam = createQueryParamFunctionFactory<
             return v.toISOString().split('T')[0];
         }),
     onChange: (v) => {
+        if (props.deserialize) {
+            props.onChange(props.deserialize(v));
+            return;
+        }
         if (Array.isArray(v)) {
             const parsedDate = new Date(v[0]);
             if (!isNaN(parsedDate.getTime())) {
