@@ -37,8 +37,7 @@ pnpm add use-next-query-params
 
 ### With Provider
 
-In the `_app.tsx` (or `_app.jsx`) file, wrap your application in the `NextQueryParamsProvider`
-component:
+In the `_app.tsx` (or `_app.jsx`) file, wrap your application in `NextQueryParamsProvider`:
 
 ```tsx
 // pages/_app.tsx
@@ -55,7 +54,7 @@ export default function App({ Component, pageProps }) {
 }
 ```
 
-Then, in your page component, use the `useNextQueryParams` hook to link states to url query
+Then, in your page component, use the `useNextQueryParams` hook to link states to URL query
 parameters:
 
 ```tsx
@@ -130,7 +129,7 @@ createNextRouterAdapter(router, {
 
 ### Without Provider
 
-You can also use the `useNextQueryParams` hook directly by passing the adapter as a parameter:
+You can also use the `useNextQueryParams` hook without a provider by passing the adapter as a parameter:
 
 ```tsx
 // pages/example.tsx
@@ -156,7 +155,7 @@ export default function ExamplePage() {
                 onChange: setDisplayName
             })
         },
-        createNextRouterAdapter(useRouter())
+        createNextRouterAdapter(useRouter()) // pass the router adapter as the second argument
     );
     return (
         <>
@@ -169,11 +168,11 @@ export default function ExamplePage() {
 
 ### Overriding the Provider Adapter Settings
 
-By passing the `adapter` prop to the `NextQueryParamsProvider` (as shown above), it can override the
-default settings for the adapter set in the provider (if present).
+By passing the `adapter` prop to the `NextQueryParamsProvider` (as shown above), you can also override the
+default settings for the adapter provided in the provider (if it is present).
 
 Note that all fields for the `adapter` prop are optional in the hook. That means you can override
-the settings you want to change.
+only the settings you want to change.
 
 ```tsx
 // pages/example.tsx
@@ -194,7 +193,7 @@ export default function ExamplePage() {
             })
         },
         {
-            // Override the provider settings for the adapter
+            // Override some of the settings for the adapter for this particular hook
             mode: 'merge',
             onChange: (urlQuery, isTriggeredByUrl) => {
                 // Do something with the urlQuery
@@ -256,7 +255,7 @@ export default function ExamplePage() {
             // note that the return type here can be `undefined` or `null` if `optional` or `nullable` is set to true
             deserialize: (value: string | string[]): string => {
                 // Do something with the value
-                // Typically, you would parse the value from the url query to the desired state
+                // Typically, you would parse the value from the URL query to the desired state
                 return value;
             },
             // optional; if you provide a custom `serialize` function, you should also provide a
@@ -309,7 +308,7 @@ export default function ExamplePage() {
             // note that the return type here can be `undefined` or `null` if `optional` or `nullable` is set to true
             deserialize: (value: string | string[]): number => {
                 // Do something with the value
-                // Typically, you would parse the value from the url query to the desired state
+                // Typically, you would parse the value from the URL query to the desired state
                 if (Array.isArray(value)) {
                     return Number(value[0]);
                 }
@@ -369,7 +368,7 @@ export default function ExamplePage() {
             // note that the return type here can be `undefined` or `null` if `optional` or `nullable` is set to true
             deserialize: (value: string | string[]): boolean => {
                 // Do something with the value
-                // Typically, you would parse the value from the url query to the desired state
+                // Typically, you would parse the value from the URL query to the desired state
                 if (Array.isArray(value)) {
                     return value[0] === 'true';
                 }
@@ -427,7 +426,7 @@ export default function ExamplePage() {
             // note that the return type here can be `undefined` or `null` if `optional` or `nullable` is set to true
             deserialize: (value: string | string[]): Record<string, any> => {
                 // Do something with the value
-                // Typically, you would parse the value from the url query to the desired state
+                // Typically, you would parse the value from the URL query to the desired state
                 if (Array.isArray(value)) {
                     return new Date(value[0]);
                 }
@@ -486,7 +485,7 @@ export default function ExamplePage() {
             // note that the return type here can be `undefined` or `null` if `optional` or `nullable` is set to true
             deserialize: (value: string | string[]): Date => {
                 // Do something with the value
-                // Typically, you would parse the value from the url query to the desired state
+                // Typically, you would parse the value from the URL query to the desired state
                 if (Array.isArray(value)) {
                     return new Date(value[0]);
                 }
@@ -544,7 +543,7 @@ export default function ExamplePage() {
             // note that the return type here can be `undefined` or `null` if `optional` or `nullable` is set to true
             deserialize: (value: string | string[]): string[] => {
                 // Do something with the value
-                // Typically, you would parse the value from the url query to the desired state
+                // Typically, you would parse the value from the URL query to the desired state
                 if (Array.isArray(v)) {
                     props.onChange(v);
                 } else {
@@ -597,7 +596,7 @@ export default function ExamplePage() {
             // note that the return type here can be `undefined` or `null` if `optional` or `nullable` is set to true
             deserialize: (value: string | string[]): number[] => {
                 // Do something with the value
-                // Typically, you would parse the value from the url query to the desired state
+                // Typically, you would parse the value from the URL query to the desired state
                 if (Array.isArray(v)) {
                     return v.map((v) => Number(v));
                 }
@@ -670,7 +669,7 @@ export default function App() {
 }
 ```
 
-### Router Adapter `mode`
+### Router adapter `mode`
 
 The `mode` property of the adapter can be set to one of the following values:
 
@@ -701,12 +700,12 @@ export default function ExamplePage() {
             value: name,
             onChange: (value: string) => {
                 // Do something with the value
-                // Typically, you would deserialize the value from the url query to the desired state
+                // Typically, you would deserialize the value from the URL query to the desired state
                 setName(yourDeserializationFunctionForStrings(value));
             },
             onReset: () => {
                 // Do something when the value is reset
-                // This will happen when `mode` is set to `reset` and the query parameter is removed from the url
+                // This will happen when `mode` is set to `reset` and the query parameter is removed from the URL
                 // Typically, you would update the state to its default value
                 setName('John Doe');
             },
@@ -722,12 +721,12 @@ export default function ExamplePage() {
             value: age,
             onChange: (value: number) => {
                 // Do something with the value
-                // Typically, you would deserialize the value from the url query to the desired state
+                // Typically, you would deserialize the value from the URL query to the desired state
                 setAge(yourDeserializationFunctionForNumbers(value));
             },
             onReset: () => {
                 // Do something when the value is reset
-                // This will happen when `mode` is set to `reset` and the query parameter is removed from the url
+                // This will happen when `mode` is set to `reset` and the query parameter is removed from the URL
                 // Typically, you would update the state to its default value
                 setAge(30);
             },
@@ -745,7 +744,7 @@ export default function ExamplePage() {
 }
 ```
 
-### Create your custom builders
+### Create your custom query param builders
 
 The package also exports a `createQueryParamFunctionFactory` function that can be used to create your own builder functions. See example usage below:
 
@@ -754,17 +753,17 @@ The package also exports a `createQueryParamFunctionFactory` function that can b
 
 import { useNextQueryParams, createQueryParamFunctionFactory } from 'use-next-query-params';
 
-// note that props have the below type
+// Note that `props` have the below type
 // {
 //     value: AllowedType<T, N, O>;
 //     onChange: (value: AllowedType<T, N, O>) => void;
 //     /**
-//      * Deserialize a value from a parsed url query into the type of the query param.
+//      * Deserialize a value from a parsed URL query into the type of the query param.
 //      * @note If you are using a custom `serialize` function, you should also provide a custom `deserialize` function. They must be inverses of each other.
 //      */
 //     deserialize?: (value: string | string[]) => AllowedType<T, N, O>;
 //     /**
-//      * Serialize a value from the query param into a parsed url query (i.e., string or array of strings).
+//      * Serialize a value from the query param into a parsed URL query (i.e., string or array of strings).
 //      * @note If you are using a custom `deserialize` function, you should also provide a custom `serialize` function. They must be inverses of each other.
 //      */
 //     serialize?: (value: AllowedType<T, N, O>) => string | string[];
@@ -779,7 +778,7 @@ export const createMyQueryParam = createQueryParamFunctionFactory<MyOwnType>((pr
     // T is the type of the query param, here it is `MyOwnType`
     // N and O are boolean values that indicate whether the query param is nullable and/or optional
     value: props.value,
-    // `onChange` is a function that takes a value of type `AllowedType<T, N, O>` and updates the url query param
+    // `onChange` is a function that takes a value of type `AllowedType<T, N, O>` and updates the URL query param
     onChange: props.onChange,
     // optional, `defaultValue` is the default value of the query param
     defaultValue: props.defaultValue,

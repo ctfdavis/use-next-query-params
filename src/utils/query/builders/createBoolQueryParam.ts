@@ -1,5 +1,27 @@
 import { createQueryParamFunctionFactory } from './createQueryParamFunctionFactory';
 
+/**
+ * Builds a query param for a boolean value.
+ *
+ * @param props - The props for the query param function {@link CreateQueryParamProps}
+ *
+ * @returns A query param to be used in the `useQueryParams` hook {@link NextQueryParam}
+ *
+ * @example
+ * ```tsx
+ * function MyComponent() {
+ *  const [bool, setBool] = useState(true);
+ *  useNextQueryParams({
+ *    bool: createBoolQueryParam({
+ *      value: bool,
+ *      onChange: setBool,
+ *    }),
+ *  });
+ *  return <div>Hello {bool ? 'World' : 'Universe'}</div>;
+ *  // ?bool=true
+ * }
+ * ```
+ */
 export const createBoolQueryParam = createQueryParamFunctionFactory<boolean>((props) => ({
     value: props.value,
     serialize:

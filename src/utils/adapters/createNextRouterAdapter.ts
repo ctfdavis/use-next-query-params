@@ -3,6 +3,25 @@ import { NextQueryParamsAdapter } from '../../types';
 import { ParsedUrlQuery } from 'querystring';
 import { NextRouterAdapterOptions } from '../../types/NextRouterAdapterOptions';
 
+/**
+ * Creates a Next.js router adapter for the `useNextQueryParams` hook.
+ *
+ * @param nextRouter - The next router instance
+ * @param options - The options for the adapter {@link NextRouterAdapterOptions}
+ *
+ * @example
+ * ```tsx
+ * function App({ Component, pageProps }: AppProps) {
+ *   const router = useRouter();
+ *   const adapter = createNextRouterAdapter(router);
+ *   return (
+ *     <NextQueryParamsProvider adapter={adapter}>
+ *       <Component {...pageProps} />
+ *     </NextQueryParamsProvider>
+ *   );
+ * }
+ * ```
+ */
 export function createNextRouterAdapter(
     nextRouter: NextRouter,
     options?: NextRouterAdapterOptions
