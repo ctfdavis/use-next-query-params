@@ -3,7 +3,13 @@ import { NextQueryParamsAdapterMode } from './NextQueryParamsAdapterMode';
 import { SerializeQueryParam } from './SerializeQueryParam';
 
 export type NextQueryParamsAdapter = {
+    /**
+     * Whether the router is ready (i.e. whether the router has been initialized).
+     */
     readonly isRouterReady: boolean;
+    /**
+     * The current query params in the url.
+     */
     readonly urlQuery: ParsedUrlQuery;
     /**
      * Callback that is called when urlQuery params are updated.
@@ -13,7 +19,7 @@ export type NextQueryParamsAdapter = {
      */
     readonly onChange: (urlQuery: ParsedUrlQuery, isTriggeredByUrl: boolean) => void;
     /**
-     * Determines how urlQuery params are updated during navigation within the same page component.
+     * Determines how query params are updated during navigation within the same page component.
      * @default 'reset'
      * @remarks
      * - 'reset' - Updates urlQuery params to match the url urlQuery, and resets

@@ -1,5 +1,26 @@
 import { createQueryParamFunctionFactory } from './createQueryParamFunctionFactory';
 
+/**
+ * Builds a query param for a string array value.
+ *
+ * @param props - The props for the query param function {@link CreateQueryParamProps}
+ *
+ * @returns A query param to be used in the `useQueryParams` hook {@link NextQueryParam}
+ *
+ * @example
+ * ```tsx
+ * function MyComponent() {
+ *   const [strArr, setStrArr] = useState(['foo', 'bar']);
+ *   useNextQueryParams({
+ *     strArr: createStrArrQueryParam({
+ *       value: strArr,
+ *       onChange: setStrArr,
+ *     }),
+ *   });
+ *   return <div>Hello {strArr.join(', ')}</div>;
+ *   // ?strArr=foo&strArr=bar
+ * }
+ */
 export const createStrArrQueryParam = createQueryParamFunctionFactory<string[]>((props) => ({
     value: props.value,
     serialize: props.serialize,

@@ -1,5 +1,32 @@
 import { createQueryParamFunctionFactory } from './createQueryParamFunctionFactory';
 
+/**
+ * Builds a query param for a date value.
+ *
+ * @param props - The props for the query param function {@link CreateQueryParamProps}
+ *
+ * @returns A query param to be used in the `useQueryParams` hook {@link NextQueryParam}
+ *
+ * @example
+ * ```tsx
+ * function MyComponent() {
+ *  const [date, setDate] = useState(new Date('2021-01-01T00:00:00'));
+ *  useNextQueryParams({
+ *    date: createDateQueryParam({
+ *      value: date,
+ *      onChange: setDate,
+ *      withTime: true,
+ *    }),
+ *    dateWithoutTime: createDateQueryParam({
+ *      value: date,
+ *      onChange: setDate,
+ *    }),
+ *  });
+ *  return <div>Hello {date.toISOString()}</div>;
+ *  // ?date=2021-01-01T00:00:00&dateWithoutTime=2021-01-01
+ * }
+ * ```
+ */
 export const createDateQueryParam = createQueryParamFunctionFactory<
     Date,
     {

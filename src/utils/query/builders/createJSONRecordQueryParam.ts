@@ -1,5 +1,27 @@
 import { createQueryParamFunctionFactory } from './createQueryParamFunctionFactory';
 
+/**
+ * Builds a query param for a JSON record value.
+ *
+ * @param props - The props for the query param function {@link CreateQueryParamProps}
+ *
+ * @returns A query param to be used in the `useQueryParams` hook {@link NextQueryParam}
+ *
+ * @example
+ * ```tsx
+ * function MyComponent() {
+ *   // The explicit typing of `record` is necessary to ensure that the value is a JSON record
+ *   const [record, setRecord] = useState<Record<string, string>>({ foo: 'bar' });
+ *   useNextQueryParams({
+ *     record: createJSONRecordQueryParam({
+ *       value: record,
+ *       onChange: setRecord,
+ *     }),
+ *   });
+ *   return <div>Hello {record.foo}</div>;
+ *   // ?record=%7B%22foo%22%3A%22bar%22%7D
+ * }
+ */
 export const createJSONRecordQueryParam = createQueryParamFunctionFactory<Record<string, any>>(
     (props) => ({
         value: props.value,

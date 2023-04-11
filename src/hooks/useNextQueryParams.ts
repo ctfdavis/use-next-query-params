@@ -11,6 +11,28 @@ import { NextQueryParamsAdapterMode } from '../types/NextQueryParamsAdapterMode'
 import { getChangedUrlQueryKeys } from '../utils/query/getChangedUrlQueryKeys';
 import { baseSerializeQueryParam } from '../utils/query/baseSerializeQueryParam';
 
+/**
+ * Hook that registers states for query params and updates the url query params when the states change.
+ *
+ * @param params - The query param states to register. {@link NextQueryParams}
+ * @param adapter - The adapter to use for interacting with the url query params. {@link NextQueryParamsAdapter} If not provided, the adapter from the nearest {@link NextQueryParamsProvider} will be used.
+ *
+ * @example
+ * ```tsx
+ * function MyComponent() {
+ *   const [str, setStr] = useState('world');
+ *
+ *   useNextQueryParams({
+ *    hello: createStrQueryParam({
+ *      value: str,
+ *      onChange: setStr,
+ *    })
+ *   });
+ *
+ *   return <div>Hello {str}</div>;
+ * }
+ * ```
+ */
 export function useNextQueryParams<T extends Record<string, unknown> = Record<string, any>>(
     params: NextQueryParams<T>,
     adapter?: Partial<NextQueryParamsAdapter>

@@ -1,5 +1,27 @@
 import { createQueryParamFunctionFactory } from './createQueryParamFunctionFactory';
 
+/**
+ * Builds a query param for a number value.
+ *
+ * @param props - The props for the query param function {@link CreateQueryParamProps}
+ *
+ * @returns A query param to be used in the `useQueryParams` hook {@link NextQueryParam}
+ *
+ * @example
+ * ```tsx
+ * function MyComponent() {
+ *  const [num, setNum] = useState(0);
+ *  useNextQueryParams({
+ *    num: createNumQueryParam({
+ *      value: num,
+ *      onChange: setNum,
+ *    }),
+ *  });
+ *  return <div>Hello {num}</div>;
+ *  // ?num=0
+ * }
+ * ```
+ */
 export const createNumQueryParam = createQueryParamFunctionFactory<number>((props) => ({
     value: props.value,
     serialize: props.serialize,
