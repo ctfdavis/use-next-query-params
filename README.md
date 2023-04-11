@@ -37,8 +37,7 @@ pnpm add use-next-query-params
 
 ### With Provider
 
-In the `_app.tsx` (or `_app.jsx`) file, wrap your application in the `NextQueryParamsProvider`
-component:
+In the `_app.tsx` (or `_app.jsx`) file, wrap your application in `NextQueryParamsProvider`:
 
 ```tsx
 // pages/_app.tsx
@@ -130,7 +129,7 @@ createNextRouterAdapter(router, {
 
 ### Without Provider
 
-You can also use the `useNextQueryParams` hook directly by passing the adapter as a parameter:
+You can also use the `useNextQueryParams` hook without a provider by passing the adapter as a parameter:
 
 ```tsx
 // pages/example.tsx
@@ -156,7 +155,7 @@ export default function ExamplePage() {
                 onChange: setDisplayName
             })
         },
-        createNextRouterAdapter(useRouter())
+        createNextRouterAdapter(useRouter()) // pass the router adapter as the second argument
     );
     return (
         <>
@@ -169,11 +168,11 @@ export default function ExamplePage() {
 
 ### Overriding the Provider Adapter Settings
 
-By passing the `adapter` prop to the `NextQueryParamsProvider` (as shown above), it can override the
-default settings for the adapter set in the provider (if present).
+By passing the `adapter` prop to the `NextQueryParamsProvider` (as shown above), you can also override the
+default settings for the adapter provided in the provider (if it is present).
 
 Note that all fields for the `adapter` prop are optional in the hook. That means you can override
-the settings you want to change.
+only the settings you want to change.
 
 ```tsx
 // pages/example.tsx
@@ -194,7 +193,7 @@ export default function ExamplePage() {
             })
         },
         {
-            // Override the provider settings for the adapter
+            // Override some of the settings for the adapter for this particular hook
             mode: 'merge',
             onChange: (urlQuery, isTriggeredByUrl) => {
                 // Do something with the urlQuery
@@ -670,7 +669,7 @@ export default function App() {
 }
 ```
 
-### Router Adapter `mode`
+### Router adapter `mode`
 
 The `mode` property of the adapter can be set to one of the following values:
 
@@ -745,7 +744,7 @@ export default function ExamplePage() {
 }
 ```
 
-### Create your custom builders
+### Create your custom query param builders
 
 The package also exports a `createQueryParamFunctionFactory` function that can be used to create your own builder functions. See example usage below:
 
@@ -754,7 +753,7 @@ The package also exports a `createQueryParamFunctionFactory` function that can b
 
 import { useNextQueryParams, createQueryParamFunctionFactory } from 'use-next-query-params';
 
-// note that props have the below type
+// Note that `props` have the below type
 // {
 //     value: AllowedType<T, N, O>;
 //     onChange: (value: AllowedType<T, N, O>) => void;
