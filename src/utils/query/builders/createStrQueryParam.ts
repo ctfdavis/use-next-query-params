@@ -24,7 +24,7 @@ import { createQueryParamFunctionFactory } from './createQueryParamFunctionFacto
  */
 export const createStrQueryParam = createQueryParamFunctionFactory<string>((props) => ({
     value: props.value,
-    serialize: props.serialize || ((v) => v),
+    serialize: props.serialize || ((v) => (v === null || v === undefined ? undefined : v)),
     onChange: (v) => {
         if (props.deserialize) {
             props.onChange(props.deserialize(v));

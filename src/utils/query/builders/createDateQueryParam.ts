@@ -38,7 +38,7 @@ export const createDateQueryParam = createQueryParamFunctionFactory<
         props.serialize ||
         ((v) => {
             if (v === undefined || v === null) {
-                return v;
+                return undefined;
             }
             if (props.withTime) {
                 return v.toISOString().split('.')[0];

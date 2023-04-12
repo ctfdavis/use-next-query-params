@@ -1,4 +1,5 @@
 import { AllowedType } from './AllowedType';
+import { SerializeQueryParam } from './SerializeQueryParam';
 
 export type CreateQueryParamProps<
     T,
@@ -25,7 +26,7 @@ export type CreateQueryParamProps<
          * Serialize a value from the query param into a parsed URL query (i.e., string or array of strings).
          * @note If you are using a custom `deserialize` function, you should also provide a custom `serialize` function. They must be inverses of each other.
          */
-        serialize?: (value: AllowedType<T, N, O>) => string | string[];
+        serialize?: SerializeQueryParam<AllowedType<T, N, O>>;
         /**
          * The default value of the query param state. It is used to reset the state value when the corresponding URL query param is removed and `mode` in the adapter is set to `reset` {@link NextQueryParamsAdapter}.
          */

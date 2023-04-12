@@ -28,7 +28,7 @@ export const createBoolQueryParam = createQueryParamFunctionFactory<boolean>((pr
         props.serialize ||
         ((v) => {
             if (v === undefined || v === null) {
-                return v;
+                return undefined;
             }
             return v.toString();
         }),

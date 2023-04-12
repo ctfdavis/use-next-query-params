@@ -1,1 +1,3 @@
-export type SerializeQueryParam = (value: any) => string | string[] | undefined;
+import { SerializedQueryParam } from './SerializedQueryParam';
+
+export type SerializeQueryParam<T = unknown> = (value: T) => SerializedQueryParam;

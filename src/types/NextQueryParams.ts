@@ -1,3 +1,5 @@
+import { SerializeQueryParam } from './SerializeQueryParam';
+
 export type NextQueryParam<T> = {
     /**
      * The value of the query param state.
@@ -17,7 +19,7 @@ export type NextQueryParam<T> = {
      * @remarks
      * If not provided, the default serialization function `baseSerializeQueryParam` {@link baseSerializeQueryParam} will be used to serialize the query param state.
      */
-    readonly serialize?: (value: T) => string | string[] | undefined | null;
+    readonly serialize?: SerializeQueryParam<T>;
 };
 
 export type NextQueryParams<T extends Record<string, unknown> = Record<string, any>> = {

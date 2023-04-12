@@ -29,7 +29,7 @@ export const createJSONRecordQueryParam = createQueryParamFunctionFactory<Record
             props.serialize ||
             ((v) => {
                 if (v === undefined || v === null) {
-                    return v;
+                    return undefined;
                 }
                 return JSON.stringify(v);
             }),
