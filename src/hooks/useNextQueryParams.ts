@@ -10,6 +10,7 @@ import { NextQueryParamsAdapterMode } from '../types/NextQueryParamsAdapterMode'
 import { getChangedUrlQueryKeys } from '../utils/query/getChangedUrlQueryKeys';
 import { baseSerializeQueryParam } from '../utils/query/baseSerializeQueryParam';
 import { areUrlQueryValuesEqual } from '../utils/query/areUrlQueryValuesEqual';
+import { UseNextQueryParamsReturn } from '../types/UseNextQueryParams';
 
 /**
  * The `useNextQueryParams` hook registers query param states and updates the URL query params when the states change.
@@ -36,8 +37,9 @@ import { areUrlQueryValuesEqual } from '../utils/query/areUrlQueryValuesEqual';
 export function useNextQueryParams<T extends Record<string, unknown> = Record<string, any>>(
     params: NextQueryParams<T>,
     adapter?: Partial<NextQueryParamsAdapter>
-) {
+): UseNextQueryParamsReturn {
     const [init, setInit] = useState(true);
+    const [isStable, setStable] = useState(false);
     const [prevUrlQuery, setPrevUrlQuery] = useState<ParsedUrlQuery>({});
     const previouslyHasUrlQueryChanged = useRef(false);
     const keys = Object.keys(params);
@@ -138,8 +140,11 @@ export function useNextQueryParams<T extends Record<string, unknown> = Record<st
             if (init) {
                 onInit();
             } else {
+                !haveQueryParamStatesChanged && setStable(true);
                 onChange();
             }
         }
     }, [init, isRouterReady, hasUrlQueryChanged, haveQueryParamStatesChanged]);
+
+    return { isStable };
 }

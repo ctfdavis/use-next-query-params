@@ -19,7 +19,7 @@ export default function BasicTestPage() {
     const [date, setDate] = useState<Date>(new Date('1999-01-01'));
     const [strArr, setStrArr] = useState<string[]>(['a', 'b']);
     const [numArr, setNumArr] = useState<number[]>([1, 2]);
-    useNextQueryParams({
+    const { isStable } = useNextQueryParams({
         str: createStrQueryParam({
             value: str,
             onChange: setStr
@@ -51,6 +51,7 @@ export default function BasicTestPage() {
     });
     return (
         <>
+            <div id={isStable ? 'is-ready-for-test' : 'not-ready-for-test'} />
             <Link href={'/'}>Home</Link>
             <hr />
             <button
