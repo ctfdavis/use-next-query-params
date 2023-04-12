@@ -129,7 +129,8 @@ createNextRouterAdapter(router, {
 
 ### Without Provider
 
-You can also use the `useNextQueryParams` hook without a provider by passing the adapter as a parameter:
+You can also use the `useNextQueryParams` hook without a provider by passing the adapter as a
+parameter:
 
 ```tsx
 // pages/example.tsx
@@ -168,8 +169,8 @@ export default function ExamplePage() {
 
 ### Overriding the Provider Adapter Settings
 
-By passing the `adapter` prop to the `NextQueryParamsProvider` (as shown above), you can also override the
-default settings for the adapter provided in the provider (if it is present).
+By passing the `adapter` prop to the `NextQueryParamsProvider` (as shown above), you can also
+override the default settings for the adapter provided in the provider (if it is present).
 
 Note that all fields for the `adapter` prop are optional in the hook. That means you can override
 only the settings you want to change.
@@ -222,7 +223,8 @@ This package also provides type-safe, convenient query parameter builders for mo
 -   `createStrArrayQueryParam`
 -   `createNumArrayQueryParam`
 
-We use them to create query parameters for linking state variables inside the `useNextQueryParams` hook.
+We use them to create query parameters for linking state variables inside the `useNextQueryParams`
+hook.
 
 ### `createStrQueryParam`
 
@@ -256,19 +258,19 @@ export default function ExamplePage() {
             deserialize: (value: string | string[]): string => {
                 // Do something with the value
                 // Typically, you would parse the value from the URL query to the desired state
-                return value;
+                if (Array.isArray(value)) {
+                    return value[0] + '!';
+                }
+                return value + '!';
             },
             // optional; if you provide a custom `serialize` function, you should also provide a
             // a custom `deserialize` function. They should be inverses of each other.
             // note that value here can be `undefined` or `null` if `optional` or `nullable` is set to true
-            serialize: (value: string): string | string[] | undefined | null => {
+            serialize: (value: string): string | string[] | undefined => {
                 // Do something with the value
                 // Typically, you would stringify the value
-                if (Array.isArray(v)) {
-                    props.onChange(v[0]);
-                } else {
-                    props.onChange(v);
-                }
+                // Return `undefined` if you want to remove the query parameter from the URL
+                return value.substring(0, value.length - 1);
             }
         })
     });
@@ -317,18 +319,11 @@ export default function ExamplePage() {
             // optional; if you provide a custom `serialize` function, you should also provide a
             // a custom `deserialize` function. They should be inverses of each other.
             // note that value here can be `undefined` or `null` if `optional` or `nullable` is set to true
-            serialize: (value: number): string | string[] | undefined | null => {
+            serialize: (value: number): string | string[] | undefined => {
                 // Do something with the value
                 // Typically, you would stringify the value
-                if (Array.isArray(v)) {
-                    if (!isNaN(Number(v[0]))) {
-                        props.onChange(Number(v[0]));
-                    }
-                } else {
-                    if (!isNaN(Number(v))) {
-                        props.onChange(Number(v));
-                    }
-                }
+                // Return `undefined` if you want to remove the query parameter from the URL
+                return value.toString();
             }
         })
     });
@@ -377,11 +372,12 @@ export default function ExamplePage() {
             // optional; if you provide a custom `serialize` function, you should also provide a
             // a custom `deserialize` function. They should be inverses of each other.
             // note that value here can be `undefined` or `null` if `optional` or `nullable` is set to true
-            serialize: (value: boolean): string | string[] | undefined | null => {
+            serialize: (value: boolean): string | string[] | undefined => {
                 // Do something with the value
                 // Typically, you would stringify the value
+                // Return `undefined` if you want to remove the query parameter from the URL
                 if (v === undefined || v === null) {
-                    return v;
+                    return undefined;
                 }
                 if (props.withTime) {
                     return v.toISOString().split('.')[0];
@@ -435,11 +431,12 @@ export default function ExamplePage() {
             // optional; if you provide a custom `serialize` function, you should also provide a
             // a custom `deserialize` function. They should be inverses of each other.
             // note that value here can be `undefined` or `null` if `optional` or `nullable` is set to true
-            serialize: (value: Record<string, any>): string | string[] | undefined | null => {
+            serialize: (value: Record<string, any>): string | string[] | undefined => {
                 // Do something with the value
                 // Typically, you would stringify the value
+                // Return `undefined` if you want to remove the query parameter from the URL
                 if (v === undefined || v === null) {
-                    return v;
+                    return undefined;
                 }
                 return JSON.stringify(v);
             }
@@ -494,11 +491,12 @@ export default function ExamplePage() {
             // optional; if you provide a custom `serialize` function, you should also provide a
             // a custom `deserialize` function. They should be inverses of each other.
             // note that value here can be `undefined` or `null` if `optional` or `nullable` is set to true
-            serialize: (value: Date): string | string[] | undefined | null => {
+            serialize: (value: Date): string | string[] | undefined => {
                 // Do something with the value
                 // Typically, you would stringify the value
+                // Return `undefined` if you want to remove the query parameter from the URL
                 if (v === undefined || v === null) {
-                    return v;
+                    return undefined;
                 }
                 if (props.withTime) {
                     return v.toISOString().split('.')[0];
@@ -553,9 +551,10 @@ export default function ExamplePage() {
             // optional; if you provide a custom `serialize` function, you should also provide a
             // a custom `deserialize` function. They should be inverses of each other.
             // note that value here can be `undefined` or `null` if `optional` or `nullable` is set to true
-            serialize: (value: string[]): string | string[] | undefined | null => {
+            serialize: (value: string[]): string | string[] | undefined => {
                 // Do something with the value
                 // Typically, you would stringify the value
+                // Return `undefined` if you want to remove the query parameter from the URL
                 return v;
             }
         })
@@ -605,9 +604,10 @@ export default function ExamplePage() {
             // optional; if you provide a custom `serialize` function, you should also provide a
             // a custom `deserialize` function. They should be inverses of each other.
             // note that value here can be `undefined` or `null` if `optional` or `nullable` is set to true
-            serialize: (value: number[]): string | string[] | undefined | null => {
+            serialize: (value: number[]): string | string[] | undefined => {
                 // Do something with the value
                 // Typically, you would stringify the value
+                // Return `undefined` if you want to remove the query parameter from the URL
                 return v.map((v) => v.toString());
             }
         })
@@ -637,9 +637,9 @@ type NextQueryParamsAdapter = {
 };
 ```
 
-You can provide a custom adapter to the `NextQueryParamsProvider` provider or
-`useNextQueryParams` hook (as the second argument). This is useful if you are using a
-router different from Next.js built-in router.
+You can provide a custom adapter to the `NextQueryParamsProvider` provider or `useNextQueryParams`
+hook (as the second argument). This is useful if you are using a router different from Next.js
+built-in router.
 
 ```jsx
 // app.jsx
@@ -711,9 +711,10 @@ export default function ExamplePage() {
             },
             // optional; if you provide a custom `serialize` function, you should also provide a
             // a custom `deserialize` function used in the `onChange` function (as shown above). They should be inverses of each other.
-            serialize: (value: string): string | undefined | null => {
+            serialize: (value: string): string | string[] | undefined => {
                 // Do something with the value
                 // Typically, you would stringify the value
+                // Return `undefined` if you want to remove the query parameter from the URL
                 return value;
             }
         },
@@ -732,9 +733,10 @@ export default function ExamplePage() {
             },
             // optional; if you provide a custom `serialize` function, you should also provide a
             // a custom `deserialize` function used in the `onChange` function (as shown above). They should be inverses of each other.
-            serialize: (value: number): string | undefined | null => {
+            serialize: (value: number): string | string[] | undefined => {
                 // Do something with the value
                 // Typically, you would stringify the value
+                // Return `undefined` if you want to remove the query parameter from the URL
                 return value.toString();
             }
         }
@@ -746,7 +748,8 @@ export default function ExamplePage() {
 
 ### Create your custom query param builders
 
-The package also exports a `createQueryParamFunctionFactory` function that can be used to create your own builder functions. See example usage below:
+The package also exports a `createQueryParamFunctionFactory` function that can be used to create
+your own builder functions. See example usage below:
 
 ```tsx
 // utils/createMyQueryParam.ts
@@ -766,12 +769,12 @@ import { useNextQueryParams, createQueryParamFunctionFactory } from 'use-next-qu
 //      * Serialize a value from the query param into a parsed URL query (i.e., string or array of strings).
 //      * @note If you are using a custom `deserialize` function, you should also provide a custom `serialize` function. They must be inverses of each other.
 //      */
-//     serialize?: (value: AllowedType<T, N, O>) => string | string[];
+//     serialize?: (value: AllowedType<T, N, O>) => string | string[] | undefined;
 //     defaultValue?: AllowedType<T, N, O>;
 //     nullable?: N;
 //     optional?: O;
 // }
-export const createMyQueryParam = createQueryParamFunctionFactory<MyOwnType>((props) =>  ({
+export const createMyQueryParam = createQueryParamFunctionFactory<MyOwnType>((props) => ({
     // provide your own implementation in the below fields
 
     // note that the value here is of type `AllowedType<T, N, O>`
@@ -788,7 +791,46 @@ export const createMyQueryParam = createQueryParamFunctionFactory<MyOwnType>((pr
     nullable: props.nullable,
     // optional, `deserialize` is a function that takes a value of type `string | string[]` and deserializes it into a value of type `AllowedType<T, N, O>`
     deserialize: props.deserialize,
-    // optional, `serialize` is a function that takes a value of type `AllowedType<T, N, O>` and serializes it into a value of type `string | string[]`
-    serialize: props.serialize,
+    // optional, `serialize` is a function that takes a value of type `AllowedType<T, N, O>` and serializes it into a value of type `string | string[] | undefined`
+    serialize: props.serialize
 }));
+```
+
+### `isStable` value returned by `useNextQueryParams`
+
+The `useNextQueryParams` hook returns a `isStable` value, which is a boolean indicating whether the
+query parameters and their corresponding states are fully initialized. This could be useful if you
+want to prevent certain actions from being performed before the initialization is complete.
+
+```tsx
+// pages/example.tsx
+
+// ...
+export default function ExamplePage() {
+    const [counter, setCounter] = useState(0);
+    const [displayName, setDisplayName] = useState('');
+    const { isStable } = useNextQueryParams({
+        count: createNumQueryParam({
+            value: counter,
+            onChange: setCounter
+        })
+    });
+    return (
+        <>
+            <button
+                onClick={() => {
+                    // prevent incrementing the counter if the query parameters are not stable
+                    // this can be useful if you or your users use a browser automation tool
+                    // to change states immediately after the page loads
+                    if (isStable) {
+                        setCounter(counter + 1);
+                    }
+                }}
+            >
+                Increment Count
+            </button>
+            <p>Count: {counter}</p>
+        </>
+    );
+}
 ```
