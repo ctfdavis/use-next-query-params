@@ -97,8 +97,8 @@ the query parameters from being polluted with unnecessary values.
 ### `createNextRouterAdapter`
 
 The `createNextRouterAdapter` function is a helper function for creating an adapter for the
-`NextQueryParamsProvider`. It takes the `useRouter` hook as a parameter and returns an adapter for
-the provider.
+`NextQueryParamsProvider`. It takes a `NextRouter` instance (returned by calling `useRouter()`) as a
+parameter and returns an adapter for the provider.
 
 You can pass the second parameter to the `createNextRouterAdapter` function to override the default
 settings for the adapter:
