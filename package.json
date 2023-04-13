@@ -33,12 +33,14 @@
         "format": "prettier --write \"**/*.ts\"",
         "lint": "eslint 'src/**/*.{ts,tsx}' --fix",
         "lint:fix": "npm run lint -- --fix",
+        "type": "tsc --noEmit",
         "build:modern": "rollup -c scripts/rollup/rollup.config.js",
         "build:esm": "rollup -c scripts/rollup/rollup.esm.config.js",
         "build": "npm run build:modern",
         "prebuild": "npm run clean",
         "clean": "rimraf dist",
-        "prepublish": "npm run build"
+        "prepublish": "npm run build",
+        "bundlewatch": "npm run build && bundlewatch"
     },
     "repository": {
         "type": "git",
@@ -68,6 +70,14 @@
             "prettier --write"
         ]
     },
+    "bundlewatch": {
+        "files": [
+            {
+                "path": "./dist/index.cjs.js",
+                "maxSize": "3 kB"
+            }
+        ]
+    },
     "peerDependencies": {
         "react": "^16.8.0 || ^17 || ^18"
     },
@@ -80,6 +90,7 @@
         "@types/jest": "^29.5.0",
         "@typescript-eslint/eslint-plugin": "^5.57.0",
         "@typescript-eslint/parser": "^5.57.0",
+        "bundlewatch": "^0.3.3",
         "cypress": "^12.9.0",
         "eslint": "^8.37.0",
         "eslint-config-prettier": "^8.8.0",
