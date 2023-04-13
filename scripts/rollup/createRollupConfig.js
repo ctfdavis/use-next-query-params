@@ -1,7 +1,7 @@
 import commonjs from '@rollup/plugin-commonjs';
 import external from 'rollup-plugin-peer-deps-external';
 import sourcemaps from 'rollup-plugin-sourcemaps';
-import { terser } from 'rollup-plugin-terser';
+import terser from '@rollup/plugin-terser';
 import typescript from 'rollup-plugin-typescript2';
 
 export function createRollupConfig(options, callback) {
@@ -31,13 +31,7 @@ export function createRollupConfig(options, callback) {
                     include: /\/node_modules\//
                 }),
             sourcemaps(),
-            options.format !== 'esm' &&
-                terser({
-                    output: { comments: false },
-                    compress: {
-                        drop_console: true
-                    }
-                })
+            options.format !== 'esm' && terser()
         ].filter(Boolean)
     };
 
