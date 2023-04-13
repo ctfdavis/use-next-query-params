@@ -6,9 +6,7 @@ export default function App({ Component, pageProps }: AppProps) {
     const router = useRouter();
     return (
         <NextQueryParamsProvider adapter={createNextRouterAdapter(router)}>
-            <>
-                <Component {...pageProps} />
-            </>
+            <Component {...pageProps} />
         </NextQueryParamsProvider>
     );
 }
