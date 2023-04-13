@@ -17,9 +17,9 @@ import { AllowedType } from './AllowedType';
  * @see Query param builder factory function:
  * {@link createQueryParamFunctionFactory}
  */
-export type CreateQueryParam<T, E extends Record<string, any>> = <
-    N extends boolean = false,
-    O extends boolean = false
+export type CreateQueryParam<TData, TExtra extends Record<string, any>> = <
+    TNullable extends boolean = false,
+    TOptional extends boolean = false
 >(
-    props: CreateQueryParamProps<T, N, O, E>
-) => NextQueryParam<AllowedType<T, N, O>>;
+    props: CreateQueryParamProps<TData, TNullable, TOptional, TExtra>
+) => NextQueryParam<AllowedType<TData, TNullable, TOptional>>;

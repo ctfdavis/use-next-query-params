@@ -758,30 +758,30 @@ import { useNextQueryParams, createQueryParamFunctionFactory } from 'use-next-qu
 
 // Note that `props` have the below type
 // {
-//     value: AllowedType<T, N, O>;
-//     onChange: (value: AllowedType<T, N, O>) => void;
+//     value: AllowedType<TData, TNullable, TOptional>;
+//     onChange: (value: AllowedType<TData, TNullable, TOptional>) => void;
 //     /**
 //      * Deserialize a value from a parsed URL query into the type of the query param.
 //      * @note If you are using a custom `serialize` function, you should also provide a custom `deserialize` function. They must be inverses of each other.
 //      */
-//     deserialize?: (value: string | string[]) => AllowedType<T, N, O>;
+//     deserialize?: (value: string | string[]) => AllowedType<TData, TNullable, TOptional>;
 //     /**
 //      * Serialize a value from the query param into a parsed URL query (i.e., string or array of strings).
 //      * @note If you are using a custom `deserialize` function, you should also provide a custom `serialize` function. They must be inverses of each other.
 //      */
-//     serialize?: (value: AllowedType<T, N, O>) => string | string[] | undefined;
-//     defaultValue?: AllowedType<T, N, O>;
-//     nullable?: N;
-//     optional?: O;
+//     serialize?: (value: AllowedType<TData, TNullable, TOptional>) => string | string[] | undefined;
+//     defaultValue?: AllowedType<TData, TNullable, TOptional>;
+//     nullable?: TNullable;
+//     optional?: TOptional;
 // }
 export const createMyQueryParam = createQueryParamFunctionFactory<MyOwnType>((props) => ({
     // provide your own implementation in the below fields
 
-    // note that the value here is of type `AllowedType<T, N, O>`
-    // T is the type of the query param, here it is `MyOwnType`
-    // N and O are boolean values that indicate whether the query param is nullable and/or optional
+    // note that the value here is of type `AllowedType<TData, TNullable, TOptional>`
+    // TData is the type of the query param, here it is `MyOwnType`
+    // TNullable and TOptional are boolean values that indicate whether the query param is nullable and/or optional
     value: props.value,
-    // `onChange` is a function that takes a value of type `AllowedType<T, N, O>` and updates the URL query param
+    // `onChange` is a function that takes a value of type `AllowedType<TData, TNullable, TOptional>` and updates the URL query param
     onChange: props.onChange,
     // optional, `defaultValue` is the default value of the query param
     defaultValue: props.defaultValue,
@@ -789,9 +789,9 @@ export const createMyQueryParam = createQueryParamFunctionFactory<MyOwnType>((pr
     optional: props.optional,
     // optional, `nullable` is a boolean value that indicates whether the query param is nullable
     nullable: props.nullable,
-    // optional, `deserialize` is a function that takes a value of type `string | string[]` and deserializes it into a value of type `AllowedType<T, N, O>`
+    // optional, `deserialize` is a function that takes a value of type `string | string[]` and deserializes it into a value of type `AllowedType<TData, TNullable, TOptional>`
     deserialize: props.deserialize,
-    // optional, `serialize` is a function that takes a value of type `AllowedType<T, N, O>` and serializes it into a value of type `string | string[] | undefined`
+    // optional, `serialize` is a function that takes a value of type `AllowedType<TData, TNullable, TOptional>` and serializes it into a value of type `string | string[] | undefined`
     serialize: props.serialize
 }));
 ```

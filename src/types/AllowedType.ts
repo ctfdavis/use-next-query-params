@@ -1,4 +1,4 @@
-export type AllowedType<T, N, O> =
-    | T
-    | (N extends true ? null : never)
-    | (O extends true ? undefined : never);
+export type AllowedType<TData, TNullable, TOptional> =
+    | TData
+    | (TNullable extends true ? null : never)
+    | (TOptional extends true ? undefined : never);

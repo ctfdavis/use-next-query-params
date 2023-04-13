@@ -46,7 +46,7 @@ export const createStrArrQueryParam = createQueryParamFunctionFactory<string[]>(
                 : [];
         /**
          * @note The usage of `any` in the following is necessary because TypeScript is unable to
-         * infer the generic types N and O in `createQueryParamFunction` without exposing them, making it
+         * infer the generic types TNullable and TOptional in `createQueryParamFunction` without exposing them, making it
          * impossible to maintain complete type safety for the `props.onChange` argument here.
          * To ensure correctness, be cautious and thoroughly test this code.
          */
