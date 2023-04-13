@@ -12,6 +12,7 @@ import {
     createStrArrQueryParam,
     createNumArrQueryParam
 } from '../src';
+import { catchHookError } from '../test-utils';
 
 type RenderHookProps = {
     queryParams: NextQueryParams;
@@ -92,14 +93,16 @@ describe('useNextQueryParams (Integration)', () => {
     describe('without a provider (standalone)', () => {
         describe('not properly set up', () => {
             it('should throw an error', () => {
-                expect(() => {
-                    renderHook(
-                        ({ queryParams }: RenderHookProps) => useNextQueryParams(queryParams, {}),
-                        {
-                            initialProps: initialRenderHookProps
-                        }
-                    );
-                }).toThrow();
+                const error = catchHookError(
+                    ({ queryParams }: RenderHookProps) => useNextQueryParams(queryParams, {}),
+                    {
+                        initialProps: initialRenderHookProps
+                    }
+                );
+                expect(error).toBeInstanceOf(Error);
+                expect((error as Error).message).toContain(
+                    'useNextQueryParams is used outside a NextQueryParamsProvider, but no `onChange` function or `urlQuery` was passed to the hook.'
+                );
             });
         });
         describe('initial render', () => {
