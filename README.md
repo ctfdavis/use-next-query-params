@@ -673,8 +673,8 @@ export default function App() {
 
 The `mode` property of the adapter can be set to one of the following values:
 
--   `reset`: The query parameters are reset to the default values when the state changes.
--   `merge`: The query parameters are merged with the default values when the state changes.
+-   `reset`: The query parameters are reset to the default values when they are no longer in the URL after a navigation event.
+-   `merge`: The query parameters will retain their current state values when they are no longer in the URL after a navigation event.
 
 See the [demo](#demo) for an example of each mode.
 
